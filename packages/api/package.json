@@ -1,0 +1,16 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "description": "API for remote",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon ./src/index.js"
+  },
+  "main": "src/index.js",
+  "author": "Jacob Schatz",
+  "private": true,
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.3"
+  }
+}
