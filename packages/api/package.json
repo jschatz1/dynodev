@@ -3,14 +3,26 @@
   "version": "0.0.1",
   "description": "API for remote",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon ./src/index.js"
+    "dev": "NODE_ENV=development nodemon ./src/index.js",
+    "test": "NODE_ENV=test jest --testTimeout=10000",
+    "coverage": "NODE_ENV=test && jest --coverage --testTimeout=10000"
   },
   "main": "src/index.js",
   "author": "Jacob Schatz",
   "private": true,
   "dependencies": {
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "nodemon": "^2.0.3"
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "jest": "^25.4.0",
+    "nodemon": "^1.19.2",
+    "supertest": "^4.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "./node_modules/"
+    ]
   }
 }
