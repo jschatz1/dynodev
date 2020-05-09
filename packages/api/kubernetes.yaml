@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: almond-node-api
+  labels:
+    app: almond-node-api
+spec:
+  selector:
+    matchLabels:
+      app: almond-node-api
+  template:
+    metadata:
+      labels:
+        app: almond-node-api
+    spec:
+      containers:
+        - name: almond-node-api
+          image: almond-node-api-image
+          ports:
+            - containerPort: 3000

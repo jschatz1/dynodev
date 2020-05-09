@@ -1,0 +1,31 @@
+.DS_Store
+node_modules
+
+# local env files
+.env.local
+.env.*.local
+.env
+
+src/public/*
+!src/public/.keep
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+dist
+
+# production database settings
+config/config_prod.json
+
+dump.rdb

@@ -11,7 +11,7 @@ apiRoutes(app);
 module.exports = app.listen(port, () => {
   if (process.env.NODE_ENV !== "test") {
     console.log(
-      `Example app listening on port ${port}!\n\nEnvironment: ${process.env.NODE_ENV}`
+      `Almond listening on port ${port}!\n\nEnvironment: ${process.env.NODE_ENV}`
     );
   }
 });
