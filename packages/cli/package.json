@@ -20,8 +20,10 @@
     "lowdb": "^1.0.0",
     "minimist-options": "^4.0.2",
     "normalize-package-data": "^2.5.0",
+    "prompt": "^1.0.0",
     "redent": "^3.0.0",
-    "trim-newlines": "^3.0.0"
+    "trim-newlines": "^3.0.0",
+    "yn": "^4.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-auto-install": "^2.1.0",

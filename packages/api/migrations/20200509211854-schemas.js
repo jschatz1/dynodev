@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("Projects", {
+    return queryInterface.createTable("Schemas", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,12 +11,21 @@ module.exports = {
       },
       uuid: {
         allowNull: false,
-        unique: true,
         type: Sequelize.STRING,
       },
-      name: {
+      config: {
         allowNull: false,
         type: Sequelize.STRING,
+      },
+      ProjectId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Projects",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -28,11 +37,11 @@ module.exports = {
       },
     })
     .then(() => {
-      queryInterface.addIndex('Projects', ['uuid'])
+      queryInterface.addIndex('Models', ['uuid'])
     });
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("Projects");
+    return queryInterface.dropTable("Models");
   }
 };

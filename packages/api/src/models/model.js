@@ -3,8 +3,8 @@ const Sequelize = require("sequelize");
 const uuidv4 = require("uuid/v4");
 
 module.exports = (sequelize, DataTypes) => {
-  const Project = sequelize.define(
-    "Project",
+  const Model = sequelize.define(
+    "Model",
     {
       uuid: {
         type: Sequelize.STRING,
@@ -17,25 +17,30 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       hooks: {
-        async beforeCreate(project, options) {
-          project.uuid = uuidv4();
+        async beforeCreate(model, options) {
+          model.uuid = uuidv4();
         },
       },
     }
   );
 
-  Project.prototype.toJSON = function toJSON() {
+  Model.prototype.toJSON = function toJSON() {
     return {
       uuid: this.uuid,
       name: this.name,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-      models: this.Models
     };
   };
 
-  Project.associate = function(models) {
-    models.Project.hasMany(models.Model);
-  }
-  return Project;
+  Model.associate = function (models) {
+    models.Model.belongsTo(models.Project, {
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+      foreignKey: {
+        allowNull: false,
+      },
+    });
+  };
+  return Model;
 };
