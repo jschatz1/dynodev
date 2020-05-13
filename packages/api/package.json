@@ -1,38 +1,15 @@
 {
   "name": "api",
-  "version": "0.0.1",
-  "description": "API for remote",
-  "scripts": {
-    "dev": "NODE_ENV=development nodemon ./src/index.js",
-    "test": "NODE_ENV=test jest --testTimeout=10000",
-    "coverage": "NODE_ENV=test && jest --coverage --testTimeout=10000",
-    "db:reset": "yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate && yarn sequelize-cli db:seed:all --debug"
-  },
-  "main": "src/index.js",
-  "author": "Jacob Schatz",
   "private": true,
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "compression": "^1.7.4",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "helmet": "^3.22.0",
-    "lodash": "^4.17.15",
-    "morgan": "^1.10.0",
-    "pg": "^8.1.0",
-    "pg-hstore": "^2.3.3",
-    "sequelize": "^5.21.7"
+    "@rails/actioncable": "^6.0.0",
+    "@rails/activestorage": "^6.0.0",
+    "@rails/ujs": "^6.0.0",
+    "@rails/webpacker": "4.2.2",
+    "turbolinks": "^5.2.0"
   },
+  "version": "0.1.0",
   "devDependencies": {
-    "jest": "^25.4.0",
-    "nodemon": "^1.19.2",
-    "sequelize-cli": "^5.5.1",
-    "supertest": "^4.0.2"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "coveragePathIgnorePatterns": [
-      "./node_modules/"
-    ]
+    "webpack-dev-server": "^3.11.0"
   }
 }
