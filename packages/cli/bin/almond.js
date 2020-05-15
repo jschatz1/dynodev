@@ -2,6 +2,7 @@
 
 const { chalk, semver } = require("@vue/cli-shared-utils");
 const commander = require("commander");
+const { almondFile } = require("../lib/config");
 
 const requiredVersion = require("../package.json").engines.node;
 const program = new commander.Command();
@@ -49,6 +50,15 @@ program.on("--help", () => {
   );
   console.log();
 });
+
+program
+  .command("push")
+  .description(`Push your ${almondFile} up and build your backend.`)
+  .action((cmd) => {
+    const options = cleanArgs(cmd);
+
+    require("../lib/push")(options);
+  });
 
 function makeAddCommand() {
   const add = new commander.Command("add");

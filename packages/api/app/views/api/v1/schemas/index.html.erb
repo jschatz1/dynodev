@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Schemas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>File</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @schemas.each do |schema| %>
+      <tr>
+        <td><%= schema.file %></td>
+        <td><%= link_to 'Show', schema %></td>
+        <td><%= link_to 'Edit', edit_schema_path(schema) %></td>
+        <td><%= link_to 'Destroy', schema, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Schema', new_schema_path %>

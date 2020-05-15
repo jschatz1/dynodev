@@ -3,7 +3,9 @@ const minimist = require("minimist");
 const path = require("path");
 const fs = require("fs");
 const { almondFile, docsSite } = require("./config");
+const { getProjects } = require("../services/projects");
 const { createModel, createAssociationsForModels } = require("./modelCreate");
+const { createProject, chooseProject } = require("./projectCreate");
 const {
   chalk,
   stopSpinner,
@@ -18,6 +20,8 @@ async function init(options) {
   let createInitFile = false;
   let listOfModelsToCreate = [];
   let toWriteToFile = "";
+  let projectUUID = "";
+
   if (!fs.existsSync(almondFile)) {
     createInitFile = true;
   } else {
@@ -30,6 +34,13 @@ async function init(options) {
   }
 
   if (createInitFile) {
+    const projects = await getProjects();
+    if (projects.data.length === 0) {
+      projectUUID = await createProject();
+    } else {
+      projectUUID = await chooseProject();
+    }
+
     const { createModelsNow } = await inquirer.prompt({
       type: "confirm",
       name: "createModelsNow",
@@ -59,14 +70,22 @@ async function init(options) {
       message: `Do you want to create associations with your models?`,
     });
 
-    if(createAssociationNow) {
-      listOfModelsToCreate = await createAssociationsForModels(listOfModelsToCreate);
+    if (createAssociationNow) {
+      listOfModelsToCreate = await createAssociationsForModels(
+        listOfModelsToCreate
+      );
     }
   }
 
-
   if (createInitFile) {
-    toWriteToFile = JSON.stringify(listOfModelsToCreate, null, 2);
+    toWriteToFile = JSON.stringify(
+      {
+        project: projectUUID,
+        models: listOfModelsToCreate,
+      },
+      null,
+      2
+    );
     fs.writeFileSync(`${targetDir}/${almondFile}`, toWriteToFile);
     console.log(chalk.green(`🎉  ${almondFile} has been created`));
   } else {
