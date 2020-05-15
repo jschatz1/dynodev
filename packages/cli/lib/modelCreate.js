@@ -83,7 +83,7 @@ module.exports.createModel = async function createModel() {
   return modelObj;
 };
 
-async function createAssociation(currentModel , modelsByName) {
+async function createAssociation(currentModel, modelsByName) {
   let associationObj = {};
 
   const { relatedModel } = await inquirer.prompt({
@@ -100,9 +100,15 @@ async function createAssociation(currentModel , modelsByName) {
     name: "associationType",
     message: `How is the ${currentModel.name} model related to the ${relatedModel} model?`,
     choices: [
-      { name: `${currentModel.name} has many ${relatedModel}`, value: "hasMany" },
+      {
+        name: `${currentModel.name} has many ${relatedModel}`,
+        value: "hasMany",
+      },
       { name: `${currentModel.name} has one ${relatedModel}`, value: "hasOne" },
-      { name: `${currentModel.name} belongs to ${relatedModel}`, value: "belongsTo" },
+      {
+        name: `${currentModel.name} belongs to ${relatedModel}`,
+        value: "belongsTo",
+      },
     ],
   });
 
@@ -110,16 +116,24 @@ async function createAssociation(currentModel , modelsByName) {
   return associationObj;
 }
 
-module.exports.createAssociationsForModels = async function createAssociationsForModels(models) {
+module.exports.createAssociationsForModels = async function createAssociationsForModels(
+  models
+) {
   let listOfModels = JSON.parse(JSON.stringify(models));
   let modelsByName = _.map(listOfModels, "name");
   let numModels = listOfModels.length;
   let currentModelIndex = 0;
   let modelObj = listOfModels[currentModelIndex];
 
-  if(numModels < 2) {
-    console.log(`You have ${numModels} ${numModels === 1 ? "model" : "models"} in your ${almondFile}.`)
-    console.log("You can associate your models with other models once you have at least 2 models.")
+  if (numModels < 2) {
+    console.log(
+      `You have ${numModels} ${
+        numModels === 1 ? "model" : "models"
+      } in your ${almondFile}.`
+    );
+    console.log(
+      "You can associate your models with other models once you have at least 2 models."
+    );
     return listOfModels;
   }
 
@@ -129,8 +143,7 @@ module.exports.createAssociationsForModels = async function createAssociationsFo
   }
 
   async function doAssociationLoop() {
-    console.log('doingNextAssociation', currentModelIndex, numModels);
-    if(currentModelIndex === numModels) {
+    if (currentModelIndex === numModels) {
       return;
     }
     await createModelAssociation(modelObj);
@@ -144,15 +157,13 @@ module.exports.createAssociationsForModels = async function createAssociationsFo
       await doAssociationLoop();
     } else {
       currentModelIndex += 1;
-      console.log('currentModelIndex', currentModelIndex);
-      modelObj = listOfModels[currentModelIndex]
+      modelObj = listOfModels[currentModelIndex];
       const { doNextAssociation } = await inquirer.prompt({
         type: "confirm",
         name: "doNextAssociation",
         message: `Do you want to add more associations?`,
       });
-      if(doNextAssociation) {
-        console.log('doNextAssociation');
+      if (doNextAssociation) {
         await doAssociationLoop();
       }
     }
@@ -160,5 +171,4 @@ module.exports.createAssociationsForModels = async function createAssociationsFo
   await doAssociationLoop();
 
   return listOfModels;
-
-}
+};
