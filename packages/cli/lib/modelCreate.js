@@ -9,7 +9,7 @@ async function createProperty(model) {
   const { name } = await inquirer.prompt({
     type: "input",
     name: "name",
-    message: `What is the name of this property for the ${model.name} model?`,
+    message: `What is the name of this property for the ${model.name} model (singular camelCase)?`,
   });
 
   propertyObj.name = name;
@@ -47,7 +47,8 @@ module.exports.createModel = async function createModel() {
   const { model } = await inquirer.prompt({
     type: "input",
     name: "model",
-    message: "What is the name of the model you would like to create?",
+    message:
+      "What is the name of the model you would like to create  (singular camelCase)?",
   });
   modelObj.name = model;
   modelObj.properties = [];

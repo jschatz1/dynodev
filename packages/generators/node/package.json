@@ -1,0 +1,33 @@
+{
+  "name": "node-generator",
+  "version": "0.0.1",
+  "description": "generates node apis",
+  "author": "Jacob Schatz",
+  "license": "Copyright 2020",
+  "scripts": {
+    "link": "node link",
+    "unlink": "node unlink",
+    "lint": "yarn prettier --write \"./[lbs]*/**/*.js\""
+  },
+  "private": true,
+  "dependencies": {
+    "@vue/cli-shared-utils": "^4.3.1",
+    "axios": "^0.19.2",
+    "commander": "^5.1.0",
+    "ejs": "^3.1.2",
+    "inquirer": "^7.1.0",
+    "lodash": "^4.17.15",
+    "minimist": "^1.2.5",
+    "mkdirp": "^1.0.4"
+  },
+  "bin": {
+    "node-almond-generator": "bin/node-almond-generator.js"
+  },
+  "engines": {
+    "node": ">=8.9"
+  },
+  "devDependencies": {
+    "ejs-lint": "^1.1.0",
+    "prettier": "^2.0.5"
+  }
+}

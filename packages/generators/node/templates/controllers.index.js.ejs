@@ -1,0 +1,13 @@
+const models = require("../models");
+<% models.forEach(function(model){ -%>
+const <%- model.name %>Routes = require("./<%- model.name %>/<%- model.name %>.routes");
+<% }); %>
+module.exports = function (app) {
+  app.get("/api/v1/hello", function (req, res) {
+    res.json({ msg: "hello there!" });
+  });
+
+  <% models.forEach(function(model){ -%>
+  app.use("/api/v1/<%- model.name %>", <%- model.name %>Routes);
+  <% }); %>
+};

@@ -4,8 +4,10 @@ const {
   error,
   clearConsole,
 } = require("@vue/cli-shared-utils");
+const fs = require("fs")
 const { almondFile } = require("./config");
 const { validateFile } = require("./validator");
+const { createSchema } = require("../services/projects");
 
 async function push(options) {
   console.log(chalk.cyan(`Checking your ${almondFile}`));
@@ -17,6 +19,17 @@ async function push(options) {
       `There was a problem with validating your ${almondFile}:\n${validationResult.reason}`
     )}\n${validationResult.solution || ""}
     `);
+    console.log(chalk.red("Cancelled push"))
+    return;
+  }
+  const file = fs.readFileSync(almondFile, "utf8");
+  const jsonFileContents = JSON.parse(file);
+  try{
+    const createdSchema = await createSchema(jsonFileContents.project, {contents: JSON.stringify(jsonFileContents)})
+    console.log(chalk.green("Almond remote is up to date"));
+    console.log(`${chalk.gray("Schema updated at")}: ${chalk.magenta(new Date(createdSchema.data.updated_at))}`);
+  } catch(error) {
+    console.log(chalk.red("Unable to update remote at this time", error));
   }
 }
 
