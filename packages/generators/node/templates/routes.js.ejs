@@ -1,0 +1,17 @@
+const Router = require("express");
+const <%- name.toLowerCase() %>Controller = require("./<%- name.toLowerCase() %>.controller");
+const routes = new Router();
+
+// POST /api/v1/<%- name.toLowerCase() %>
+// GET /api/v1/<%- name.toLowerCase() %>/:id
+// PUT /api/v1/<%- name.toLowerCase() %>/:id
+// DELETE /api/v1/<%- name.toLowerCase() %>/:id
+// GET /api/v1/<%- name.toLowerCase() %>
+
+routes.post("/", <%- name.toLowerCase() %>Controller.create);
+routes.get("/:id", <%- name.toLowerCase() %>Controller.show);
+routes.put("/:id", <%- name.toLowerCase() %>Controller.update);
+routes.delete("/:id", <%- name.toLowerCase() %>Controller.destroy);
+routes.get("/", <%- name.toLowerCase() %>Controller.index);
+
+module.exports = routes;

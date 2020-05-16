@@ -1,0 +1,82 @@
+const models = require("../../models");
+
+module.exports.create = async function create(req, res, next) {
+  let <%- modelVariable %>;
+  let reqBody = req.body;
+  try {
+    <%- modelVariable %> = await models.<%- modelClass %>.create({
+      <% properties.forEach(function(prop){ -%>
+        <%- prop.name -%>: reqBody.<%- prop.name %>,
+      <% }); -%>
+    });
+  } catch (error) {
+    console.trace("error", error);
+  }
+
+  res.json(<%- modelVariable %>);
+};
+
+module.exports.show = async function show(req, res, next) {
+  const id = req.params.id;
+  let <%- modelVariable %> = await models.<%- modelClass %>.findOne({
+    where: {
+      id,
+    }
+  });
+  if (!<%- modelVariable %>) {
+    return res.status(404).json({ msg: "not found" });
+  } else {
+    return res.json(<%- modelVariable %>)
+  }
+};
+
+module.exports.update = async function update(req, res, next) {
+  const id = req.params.id;
+  let <%- modelVariable %> = await models.<%- modelClass %>.findOne({
+    where: {
+      id,
+    }
+  });
+
+  if (!<%- modelVariable %>) {
+    return res.status(404).json({ msg: "not found" });
+  } else {
+    <% properties.forEach(prop => { -%>
+      <%- modelVariable %>.<%- prop.name -%> = reqBody.<%- prop.name %>;
+    <% }); -%>
+    let updated;
+    try {
+      updated<%- modelClass %> = await <%- modelVariable %>.save()
+    } catch(error) {
+      return res.status(422).json({ msg: "cannot save <%- modelVariable %>" });
+    }
+    return res.json(updated<%- modelClass %>);
+  }
+};
+
+module.exports.destroy = async function destroy(req, res, next) {
+  const id = req.params.id;
+  try {
+    let <%- modelVariable %> = await models.<%- modelClass %>.findOne({
+      where: {
+        id,
+      }
+    });
+    if(!modelVariable) {
+      return res.status(404).json({ msg: "not found" });
+    }
+    await <%- modelVariable %>.destroy();
+  } catch(error) {
+    return res.status(422).json({ msg: "cannot delete <%- modelVariable %>" });
+  }
+};
+
+module.exports.index = async function index(req, res, next) {
+  try {
+    let <%- modelVariable %> = await models.<%- modelClass %>.findAll();
+    return res.json(<%- modelVariable %>);
+  } catch (error) {
+    console.trace(error);
+    return res.status(422).json({ msg: "unable to find <%- modelVariable %>" });
+  }
+};

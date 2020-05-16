@@ -13,3 +13,7 @@ module.exports.getProjects = async function getProjects() {
 module.exports.createProject = async function createProject(data) {
   return axios.post("/api/v1/projects", data);
 };
+
+module.exports.createSchema = async function createSchema(projectUUID, data) {
+  return axios.post(`/api/v1/projects/${projectUUID}/schemas`, data);
+}
