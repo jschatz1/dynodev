@@ -1,0 +1,15 @@
+{
+  "title": "Almond Docs",
+  "url": "https://docs.dyno.dev/",
+  "description": "Docs for Dyno Dev",
+  "feed": {
+    "subtitle": "Docs for Dyno Dev",
+    "filename": "feed.xml",
+    "path": "/feed/feed.xml",
+    "id": "https://docs.dyno.dev/"
+  },
+  "author": {
+    "name": "Jacob Schatz ",
+    "email": "jacob@dyno.dev"
+  }
+}

@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    # certmanager.k8s.io/acme-challenge-type: http01
+    kubernetes.io/ingress.class: "nginx"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+  name: dyno-ingress
+  namespace: ingress-nginx
+spec:
+  tls:
+  - hosts:
+    - dyno.dev
+    secretName: dyno-dev-com-tls
+  rules:
+  - host: dyno.dev
+    http:
+      paths:
+      - backend:
+          serviceName: echo1
+          servicePort: 80

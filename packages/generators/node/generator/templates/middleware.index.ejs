@@ -1,26 +1,13 @@
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const compression = require("compression");
 const isDev = process.env.NODE_ENV === "development";
 const isTest = process.env.NODE_ENV === "test";
 const isStaging = process.env.NODE_ENV === "staging";
 const isProd = process.env.NODE_ENV === "production";
-const { getStoreForEnv } = require("./passportHelper");
-
-prometheus.collectDefaultMetrics();
-
-function getDomain() {
-  if (isProd) {
-    return "app.tilig.com";
-  } else if (isStaging) {
-    return "test-app.tilig.com";
-  } else {
-    return "localhost";
-  }
-}
 
 module.exports = (app) => {
-  const callbackURL = getCallbackURL();
-
   if (!isDev && !isTest) {
     app.use(compression());
     app.use(helmet());

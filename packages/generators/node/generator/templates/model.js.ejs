@@ -1,0 +1,28 @@
+"use strict";
+module.exports = (sequelize, DataTypes) => {
+  const <%- model.pascal_singular %> = sequelize.define(
+    "<%- model.pascal_singular %>",
+    {
+      <%_ model.properties.forEach(function(prop){ -%>
+      <%_ if (!prop.references) { %>
+      <%- prop.name -%>: {
+        <% if(prop.type.toLowerCase() === "email"){ -%>
+        type: DataTypes.STRING,
+        <%_ } else { -%>
+        type: DataTypes.<%- prop.type.toUpperCase() %>,
+        <%_ } %>
+        unique: <%- prop.unique %>,
+        allowNull: <%- prop.nullable %>,
+      },
+      <% } %>
+    <% }); %>},
+    {}
+  );
+
+  <%- model.pascal_singular %>.associate = function (models) {
+    <%_ model.associations.forEach(function(association){ %>
+      models.<%- model.pascal_singular %>.<%- association.type %>(models.<%- association.pascal_singular %>);
+    <% }); %>
+  };
+  return <%- model.pascal_singular %>;
+};

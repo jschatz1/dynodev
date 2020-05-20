@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello
+  template:
+    metadata:
+      labels:
+        app: hello
+    spec:
+      containers:
+      - name: hello
+        image: jschatz1/hello:0.0.2
+        imagePullPolicy: Always
+        command: ["echo", "SUCCESS"]
+        ports:
+          - containerPort: 8080
+      imagePullSecrets:
+        - name: jschatz1registrykey
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-svc
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: hello

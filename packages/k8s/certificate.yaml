@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: dyno-dev
+  namespace: ingress-nginx
+spec:
+  secretName: dyno-dev-com-tls
+  issuerRef:
+    name: letsencrypt-prod
+  commonName: dyno.dev
+  dnsNames:
+    - www.dyno.dev
+    - dyno.dev
