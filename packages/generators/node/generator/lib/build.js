@@ -5,19 +5,35 @@ const util = require("util");
 const path = require("path");
 const mkdirp = require("mkdirp");
 const prettier = require("prettier");
+const execa = require("execa");
+const dotenv = require("dotenv");
 const MODE_0666 = parseInt("0666", 8);
 const MODE_0755 = parseInt("0755", 8);
 
 const {
   chalk,
+  logWithSpinner,
   stopSpinner,
   exit,
   error,
   clearConsole,
 } = require("@vue/cli-shared-utils");
 
+let envConfig = null;
+
 function camelize(str) {
   return str.replace(/-(\w)/g, (_, c) => (c ? c.toUpperCase() : ""));
+}
+
+function run(command, args) {
+  if (!args) {
+    [command, ...args] = command.split(/\s+/);
+  }
+  let options = { cwd: this.context };
+  if (envConfig) {
+    options.env = envConfig;
+  }
+  return execa(command, args, options);
 }
 
 function underscorize(str) {
@@ -77,26 +93,30 @@ function write(file, str, mode) {
   console.log(chalk.green(`Creating ${file}`));
 }
 
-function createApplication(name, dir, schemaAlmondFile) {
+async function createApplication(name, dir, schemaAlmondFile) {
   // Package json
   const pkg = {
     name: name,
     version: "0.0.1",
     private: true,
     scripts: {
-      start: "node ./bin/www",
+      dev: "NODE_ENV=development nodemon ./src/index.js",
+      "db:reset":
+        "yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate && yarn sequelize-cli db:seed:all --debug",
+      "db:drop": "yarn sequelize-cli db:migrate:undo:all",
+      "db:migrate": "yarn sequelize-cli db:migrate",
     },
     dependencies: {
       debug: "~2.6.9",
       express: "~4.16.1",
     },
+    devDependencies: {},
   };
   if (dir !== ".") {
     mkdir(dir, ".");
   }
   mkdir(dir, "config");
   mkdir(dir, "migrations");
-  mkdir(dir, "seeders");
   mkdir(dir, "src");
   mkdir(dir, "src/middleware");
   mkdir(dir, "src/models");
@@ -108,16 +128,23 @@ function createApplication(name, dir, schemaAlmondFile) {
   const middlewareIndexTemplate = loadTemplate("middleware.index");
   const modelsIndexTemplate = loadTemplate("models.index.js");
   const controllersIndexTemplate = loadTemplate("controllers.index.js");
+  const indexTemplate = loadTemplate("index.js");
+  const gitignoreTemplate = loadTemplate("gitignore");
+  const envTemplate = loadTemplate("env");
+  const modelTemplate = loadTemplate("model.js");
+  const moduleRoutesTemplate = loadTemplate("routes.js");
+  const moduleControllersTemplate = loadTemplate("controllers.js");
+  const migrationTemplate = loadTemplate("migration.js");
+
+  write(path.join(dir, ".env"), envTemplate.render());
+  envConfig = dotenv.parse(Buffer.from(envTemplate.render()));
+
   controllersIndexTemplate.locals.models = schemaAlmondFile.models;
   schemaAlmondFile.models.forEach(function (model) {
     // add model files
-    const modelTemplate = loadTemplate("model.js");
-    const moduleRoutesTemplate = loadTemplate("routes.js");
-    const moduleControllersTemplate = loadTemplate("controllers.js");
-    modelTemplate.locals.name = model.name;
-    modelTemplate.locals.properties = model.properties;
+    modelTemplate.locals.model = model;
 
-    moduleRoutesTemplate.locals.name = model.name;
+    moduleRoutesTemplate.locals.model = model;
 
     moduleControllersTemplate.locals.modelVariable = camelize(
       underscorize(model.name.toLowerCase())
@@ -126,22 +153,21 @@ function createApplication(name, dir, schemaAlmondFile) {
       underscorize(model.name)
     );
     moduleControllersTemplate.locals.properties = model.properties;
-
     write(
-      path.join(dir, "src", "models", `${model.name}.js`),
+      path.join(dir, "src", "models", `${model.camel}.js`),
       prettier.format(modelTemplate.render(), { semi: true, parser: "babel" })
     );
 
     // add module directories
-    mkdir(dir, `src/modules/${model.name.toLowerCase()}`);
+    mkdir(dir, `src/modules/${model.underscore}`);
     // add routes
     write(
       path.join(
         dir,
         "src",
         "modules",
-        model.name.toLowerCase(),
-        `${model.name.toLowerCase()}.route.js`
+        model.underscore,
+        `${model.underscore}.routes.js`
       ),
       prettier.format(moduleRoutesTemplate.render(), {
         semi: true,
@@ -153,8 +179,8 @@ function createApplication(name, dir, schemaAlmondFile) {
         dir,
         "src",
         "modules",
-        model.name.toLowerCase(),
-        `${model.name.toLowerCase()}.controller.js`
+        model.underscore,
+        `${model.underscore}.controller.js`
       ),
       prettier.format(moduleControllersTemplate.render(), {
         semi: true,
@@ -172,6 +198,19 @@ function createApplication(name, dir, schemaAlmondFile) {
   );
 
   pkg.dependencies.morgan = "~1.9.1";
+  pkg.dependencies.axios = "^0.19.0";
+  pkg.dependencies["body-parser"] = "^1.19.0";
+  pkg.dependencies.compression = "^1.7.4";
+  pkg.dependencies["cookie-parser"] = "^1.4.4";
+  pkg.dependencies.dotenv = "^8.1.0";
+  pkg.dependencies.express = "^4.17.1";
+  pkg.dependencies.helmet = "^3.21.0";
+  pkg.dependencies.morgan = "^1.9.1";
+  pkg.dependencies.pg = "^7.12.1";
+  pkg.dependencies["express-validator"] = "^6.5.0";
+  pkg.dependencies.sequelize = "^5.19.0";
+  pkg.devDependencies["sequelize-cli"] = "^5.5.1";
+  pkg.devDependencies.nodemon = "^1.19.2";
   write(
     path.join(dir, "src", "models", "index.js"),
     modelsIndexTemplate.render()
@@ -182,6 +221,65 @@ function createApplication(name, dir, schemaAlmondFile) {
     middlewareIndexTemplate.render()
   );
   write(path.join(dir, "package.json"), JSON.stringify(pkg, null, 2) + "\n");
+  write(path.join(dir, "src", "index.js"), indexTemplate.render());
+
+  write(path.join(dir, ".gitignore"), gitignoreTemplate.render());
+  logWithSpinner("🤷‍♀️", chalk.magenta(`Running yarn install`));
+  const installSTDOUT = await run(`yarn --cwd ${dir}`);
+  // console.log(chalk.gray(installSTDOUT.stdout));
+  stopSpinner();
+  let migrationGenerationSTDOUT;
+  for await (model of schemaAlmondFile.models) {
+    console.log(
+      chalk.magenta(
+        `Running: yarn --cwd ${dir} sequelize-cli migration:generate --name "create_${model.underscore}"`
+      )
+    );
+    migrationGenerationSTDOUT = await run(
+      `yarn --cwd ${dir} sequelize-cli migration:generate --name "create_${model.underscore}"`
+    );
+    // console.log(chalk.gray(migrationGenerationSTDOUT.stdout));
+  }
+  let tryagain = 0;
+  function readMigrationsDirectory() {
+    const migrationFiles = fs.readdirSync(path.join(dir, "migrations"));
+    if (migrationFiles.length === 0) {
+      if (tryagain < 5) {
+        console.log(chalk.gray("Looking for migration files."));
+        tryagain += 1;
+        setTimeout(readMigrationsDirectory, 1000);
+      } else {
+        console.log(
+          chalk.red("For some reason no migration file were created.")
+        );
+      }
+    } else {
+      logWithSpinner(
+        "🤷‍♀️",
+        chalk.gray(
+          `Running migrations on these files:\n\t${migrationFiles.join("\n\t")}`
+        )
+      );
+      schemaAlmondFile.models.forEach(function (model) {
+        const foundMigrationFile = migrationFiles.find((migrationFile) =>
+          migrationFile.includes(model.underscore)
+        );
+        migrationTemplate.locals.model = model;
+        write(
+          path.join(dir, "migrations", foundMigrationFile),
+          prettier.format(migrationTemplate.render(), {
+            semi: true,
+            parser: "babel",
+          })
+        );
+      });
+    }
+  }
+  readMigrationsDirectory();
+  let migrationSTDOUT = await run(`yarn --cwd ${dir} db:migrate --debug`);
+  stopSpinner();
+  // console.log(chalk.gray(migrationSTDOUT.stdout));
+  console.log(chalk.green("All done!"));
 }
 
 async function build(name, options) {
@@ -195,8 +293,8 @@ async function build(name, options) {
     const destinationPath = `./api`;
     const appName = createAppName(path.resolve(destinationPath));
 
-    emptyDirectory(destinationPath, function (empty) {
-      createApplication(appName, destinationPath, schemaAlmondFile);
+    emptyDirectory(destinationPath, async function (empty) {
+      await createApplication(appName, destinationPath, schemaAlmondFile);
     });
   } catch (error) {
     console.log(chalk.red(`Not a valid ${almondFile}`));
@@ -206,7 +304,7 @@ async function build(name, options) {
 
 module.exports = (...args) => {
   return build(...args).catch((err) => {
-    stopSpinner(false); // do not persist
+    //stopSpinner(false); // do not persist
     error(err);
     if (!process.env.ALMOND_CLI_TEST) {
       process.exit(1);

@@ -1,0 +1,45 @@
+"use strict";
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable("<%- model.pascal %>", {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
+
+      <%_ model.properties.forEach(function(prop){ -%>
+      <%- prop.name -%>: {
+        <% if(prop.type.toLowerCase() === "email"){ -%>
+        type: Sequelize.STRING,
+        <%_ } else { -%>
+        type: Sequelize.<%- prop.type.toUpperCase() %>,
+        <%_ } %>
+        <% if(prop.unique) { %>
+        unique: <%- prop.unique || false %>,
+        <% } %>
+        allowNull: <%- prop.nullable %>,
+        <% if(prop.references) { -%>
+        references: {
+          model: "<%- prop.references.model %>",
+          key: "<%- prop.references.key %>",
+        },
+        <%_ } %>
+      },
+      <% }); %>
+
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+    });
+  },
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable("<%- model.pascal %>");
+  },
+};

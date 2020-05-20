@@ -1,6 +1,6 @@
 const models = require("../models");
 <% models.forEach(function(model){ -%>
-const <%- model.name %>Routes = require("./<%- model.name %>/<%- model.name %>.routes");
+const <%- model.camel %>Routes = require("./<%- model.underscore %>/<%- model.underscore %>.routes");
 <% }); %>
 module.exports = function (app) {
   app.get("/api/v1/hello", function (req, res) {
@@ -8,6 +8,6 @@ module.exports = function (app) {
   });
 
   <% models.forEach(function(model){ -%>
-  app.use("/api/v1/<%- model.name %>", <%- model.name %>Routes);
+  app.use("/api/v1/<%- model.underscore %>", <%- model.camel %>Routes);
   <% }); %>
 };

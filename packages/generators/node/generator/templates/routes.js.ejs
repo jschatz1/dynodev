@@ -1,0 +1,17 @@
+const Router = require("express");
+const <%- model.camel %>Controller = require("./<%- model.underscore %>.controller");
+const routes = new Router();
+
+// POST /api/v1/<%- model.underscore %>
+// GET /api/v1/<%- model.underscore %>/:id
+// PUT /api/v1/<%- model.underscore %>/:id
+// DELETE /api/v1/<%- model.underscore %>/:id
+// GET /api/v1/<%- model.underscore %>
+
+routes.post("/", <%- model.camel %>Controller.create);
+routes.get("/:id", <%- model.camel %>Controller.show);
+routes.put("/:id", <%- model.camel %>Controller.update);
+routes.delete("/:id", <%- model.camel %>Controller.destroy);
+routes.get("/", <%- model.camel %>Controller.index);
+
+module.exports = routes;
