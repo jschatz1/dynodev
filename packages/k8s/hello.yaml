@@ -16,7 +16,6 @@ spec:
       - name: hello
         image: jschatz1/hello:0.0.2
         imagePullPolicy: Always
-        command: ["echo", "SUCCESS"]
         ports:
           - containerPort: 8080
       imagePullSecrets:

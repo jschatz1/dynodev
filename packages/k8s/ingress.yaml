@@ -17,5 +17,5 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: echo1
+          serviceName: hello-svc
           servicePort: 80
