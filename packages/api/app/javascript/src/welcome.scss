@@ -1,0 +1,85 @@
+html, body, button, input, select, textarea {
+  font-family: 'Muli', BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+.call-to-action {
+  margin-top: 4rem;
+}
+
+.call-to-action .button.action {
+  text-transform: uppercase;
+  font-weight: bold;
+  border: none;
+  color: $blue;
+
+  padding-bottom: calc(0.5em - 1px);
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: calc(0.5em - 1px);
+
+  box-shadow: $action-box-shadow;
+
+
+  &.is-primary {
+    background: $green;
+    color: $white;
+  }
+}
+
+.buttons .button.action:not(:last-child):not(.is-fullwidth) {
+  margin-right: 2rem;
+}
+
+.hero .tablet {
+  background: url("../images/tablet.svg") no-repeat top left;
+  display: block;
+  width: 480px;
+  height: 560px;
+  position: absolute;
+  top: 240px;
+  right: 0;
+}
+
+.hero.is-butter {
+  background: url("../images/header.svg") no-repeat top left;
+  background-size: cover;
+
+  .navbar-menu {
+    justify-content: center;
+  }
+  .navbar-start {
+    margin-right: 0;
+    justify-content: flex-end;
+    flex-grow: 1;
+  }
+  .navbar-end {
+    margin-left: 0;
+    flex-grow: 1;
+  }
+
+  .navbar-item, .navbar-item .button {
+    font-weight: bold;
+    color: $white;
+  }
+
+  .navbar-item .button.is-text:hover {
+    background: rgba($white, 0.2);
+  }
+
+  .hero-body {
+    padding: 14rem 1.5rem;
+
+    @include for-size(phone-only) {
+      padding: 10rem 1.5rem;
+      padding-top: 10rem;
+      padding-top: 3rem;
+    }
+  }
+
+  .title, .subtitle {
+    color: white;
+    margin-bottom: 3rem;
+  }
+}

@@ -57,9 +57,7 @@ class Api::V1::ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      puts "hey #{params[:id]}"
       @project = Project.find_by(uuid: params[:id])
-      puts @project
       @project
     end
 

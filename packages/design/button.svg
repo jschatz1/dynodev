@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="262px" height="125px" viewBox="0 0 262 125" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Rectangle Copy</title>
+    <defs>
+        <rect id="path-1" x="222" y="0" width="186" height="49" rx="7"></rect>
+        <filter x="-12.9%" y="-49.0%" width="140.9%" height="255.1%" filterUnits="objectBoundingBox" id="filter-2">
+            <feGaussianBlur stdDeviation="0" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+        <filter x="-26.9%" y="-102.0%" width="168.8%" height="361.2%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="14" dy="14" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="19" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-528.000000, -374.000000)">
+            <g id="Header" transform="translate(-502.000000, -44.000000)">
+                <g id="Call-to-action" transform="translate(832.000000, 442.000000)">
+                    <g id="Rectangle-Copy" filter="url(#filter-2)">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-1"></use>
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
