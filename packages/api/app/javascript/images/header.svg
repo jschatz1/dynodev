@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="685px" viewBox="0 0 1440 685" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>headerBG</title>
+    <defs>
+        <linearGradient x1="38.5474193%" y1="0%" x2="38.5474193%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#418EF2" offset="0%"></stop>
+            <stop stop-color="#6DA7F2" offset="89.7904621%"></stop>
+            <stop stop-color="#3DF26A" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-2">
+            <stop stop-color="#F2F2F2" offset="0%"></stop>
+            <stop stop-color="#6DA7F2" offset="45.8218961%"></stop>
+            <stop stop-color="#418EF2" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="100%" y1="50%" x2="0%" y2="50%" id="linearGradient-3">
+            <stop stop-color="#F2F2F2" offset="0%"></stop>
+            <stop stop-color="#F2F2F2" stop-opacity="0" offset="99.9181799%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD">
+            <g id="Header" transform="translate(-502.000000, -44.000000)">
+                <g id="headerBG" transform="translate(0.000000, 0.000000)">
+                    <path d="M502,642.263949 C822,642.263949 1062,642.263949 1222,642.263949 C1382,642.263949 1622,642.263949 1942,642.263949 L1942,38 L502,38 L502,642.263949 Z" stroke="#979797" stroke-width="0" fill="url(#linearGradient-1)"></path>
+                    <path d="M75.8716871,430.773273 C406.189168,314.44921 709.79547,292.070416 986.690594,363.636889 C1402.03328,470.9866 1665.84383,549.203249 1956.12746,434.319061 C2149.64989,357.729602 2158.94477,282.547673 1984.01211,208.773273 C1782.52849,361.30091 1465.58799,382.64873 1033.19059,272.816735 C600.793202,162.984739 256.396337,170.570767 0,295.574818 L75.8716871,430.773273 Z" id="swish" fill="url(#linearGradient-2)"></path>
+                    <path d="M407.871687,503.773273 C738.189168,387.44921 1041.79547,365.070416 1318.69059,436.636889 C1734.03328,543.9866 1997.84383,622.203249 2288.12746,507.319061 C2481.64989,430.729602 2490.94477,355.547673 2316.01211,281.773273 C2114.52849,434.30091 1797.58799,455.64873 1365.19059,345.816735 C932.793202,235.984739 588.396337,243.570767 332,368.574818 L407.871687,503.773273 Z" id="swish" fill="url(#linearGradient-3)" transform="translate(1386.296081, 416.388958) rotate(-15.000000) translate(-1386.296081, -416.388958) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

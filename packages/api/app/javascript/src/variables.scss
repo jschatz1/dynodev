@@ -1,0 +1,22 @@
+$action-box-shadow: 14px 14px 38px 0px rgba(0,0,0,0.2);
+$blue: #538EEB;
+$light-blue: #79A7EC;
+$green: #7AED7B;
+$orange: #EBC06E;
+$gray: #F2F2F2;
+$white: #FFF;
+$black: #888;
+
+@mixin for-size($size) {
+  @if $size == phone-only {
+    @media (max-width: 599px) { @content; }
+  } @else if $size == tablet-portrait-up {
+    @media (min-width: 600px) { @content; }
+  } @else if $size == tablet-landscape-up {
+    @media (min-width: 900px) { @content; }
+  } @else if $size == desktop-up {
+    @media (min-width: 1200px) { @content; }
+  } @else if $size == big-desktop-up {
+    @media (min-width: 1800px) { @content; }
+  }
+}

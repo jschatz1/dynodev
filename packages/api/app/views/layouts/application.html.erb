@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api</title>
+    <title>Dyno</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag 'application', 'https://fonts.googleapis.com/css2?family=Muli:wght@400;700&display=swap' %>
+    <%= favicon_link_tag asset_pack_path 'media/images/dino.svg', rel: 'apple-touch-icon', type: 'image/svg+xml' %>
+    <%= javascript_pack_tag 'application' %>
+    <!-- dooooooooode -->
+    <%= stylesheet_pack_tag 'application' %> 
+    <!-- end dooooooooode -->
   </head>
 
   <body>
-    <%= yield %>
+  <%= yield %>
   </body>
 </html>
