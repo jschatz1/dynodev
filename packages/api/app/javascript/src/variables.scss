@@ -1,11 +1,75 @@
 $action-box-shadow: 14px 14px 38px 0px rgba(0,0,0,0.2);
 $blue: #538EEB;
+$blue-400: #73A4EE;
+$blue-300: #95B5EB;
+$blue-200: #E6EBF5;
+$blue-100: #F5F6F8;
+
 $light-blue: #79A7EC;
 $green: #7AED7B;
 $orange: #EBC06E;
 $gray: #F2F2F2;
 $white: #FFF;
-$black: #888;
+$black: #4c4c4c;
+$dark-black: #323232;
+
+
+.padding-10 {
+  padding: 10px;
+}
+
+.padding-15 {
+  padding: 15px;
+}
+
+.padding-20 {
+  padding: 20px;
+}
+
+.padding-top-10 {
+  padding-top: 10px;
+}
+
+.padding-top-15 {
+  padding-top: 10px;
+}
+
+.padding-top-20 {
+  padding-top: 10px;
+}
+
+.padding-left-10 {
+  padding-left: 10px;
+}
+
+.padding-left-12 {
+  padding-left: 12px;
+}
+
+.padding-left-15 {
+  padding-left: 15px;
+}
+
+.padding-left-20 {
+  padding-left: 20px;
+}
+
+.padding-left-22 {
+  padding-left: 22px;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+
+// flex
+.row-padding-4 {
+  display: flex;
+  flex-direction: row;
+  padding-left: 4px;
+}
+
 
 @mixin for-size($size) {
   @if $size == phone-only {

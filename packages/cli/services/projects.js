@@ -4,7 +4,7 @@ let config = {};
 axios.defaults.baseURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
-    : "https://havedecidedyet.com";
+    : "https://dyno.dev";
 
 module.exports.getProjects = async function getProjects() {
   return axios.get("/api/v1/projects");
