@@ -3,8 +3,9 @@
 const { chalk, semver } = require("@vue/cli-shared-utils");
 const commander = require("commander");
 const { almondFile } = require("../lib/config");
-
-const requiredVersion = require("../package.json").engines.node;
+const package = require("../package.json");
+const requiredVersion = package.engines.node;
+const currentVersion = package.version;
 const program = new commander.Command();
 
 function checkNodeVersion(wanted, id) {
@@ -37,6 +38,22 @@ program
     const options = cleanArgs(cmd);
 
     require("../lib/init")(options);
+  });
+
+program
+  .command("hello")
+  .description("Says Hello!")
+  .action(() => {
+    console.log(`Hey there! Welcome to Dyno! Version: ${currentVersion}`)
+  })
+
+program
+  .command("login")
+  .description("Log in to Dyno")
+  .action((cmd) => {
+    const options = cleanArgs(cmd);
+
+    require("../lib/login")(options);
   });
 
 const add = new commander.Command("heat");

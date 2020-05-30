@@ -1,0 +1,75 @@
+.navbar.white {
+  background-color: transparent;
+
+  .buttons .button:not(.is-fullwidth):hover {
+    background: white;
+  }
+}
+
+.box {
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.5), 0 0px 0 1px rgba(10, 10, 10, 0.1);
+}
+
+.button {
+  color: $black;
+  font-weight: bolder;
+  padding: 1em;
+}
+
+.button.is-primary {
+  background-color: $light-blue;
+  color: $white;
+  border-radius: 0.6rem;
+  border: 1px solid #418EF2;
+  box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.5);
+  font-size: 14px;
+
+  &:hover {
+    background-color: $blue;
+    box-shadow: 0px 2px 1px 0px rgba(0,0,0,0.5);    
+  }
+
+  &:active {
+    background-color: $blue;
+    margin-top: 2px;
+    margin-bottom: -2px;
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.5); 
+  }
+}
+
+.box {
+  padding: 0;
+
+  .title {
+    font-size: 1.5rem;
+    margin: 0;
+    border-bottom: 1px solid $gray;
+  }
+
+  .expandable {
+    cursor: pointer;
+    border-bottom: 1px solid $gray;
+    .expander-btn {
+      pointer-events: none;
+    }
+    &:hover {
+      background: $blue-100;
+    }
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .terminal {
+    background: $black;
+    color: $white;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    border: 4px solid $green;
+    &:hover {
+      background: $dark-black;
+    }
+  }
+}

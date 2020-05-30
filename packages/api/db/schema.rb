@@ -10,17 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_14_183545) do
+ActiveRecord::Schema.define(version: 2020_05_27_101553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "keys", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "uuid"
+    t.string "access"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_keys_on_user_id"
+  end
+
   create_table "projects", force: :cascade do |t|
+    t.bigint "user_id"
     t.string "name"
     t.text "description"
     t.string "uuid"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_projects_on_user_id"
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
   end
 
@@ -30,6 +41,15 @@ ActiveRecord::Schema.define(version: 2020_05_14_183545) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["project_id"], name: "index_schemas_on_project_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "provider"
+    t.string "uid"
+    t.string "name"
+    t.string "email"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end

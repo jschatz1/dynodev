@@ -5,14 +5,21 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag 'application', 'https://fonts.googleapis.com/css2?family=Muli:wght@400;700&display=swap' %>
-    <%= favicon_link_tag asset_pack_path 'media/images/dino.svg', rel: 'apple-touch-icon', type: 'image/svg+xml' %>
+    <%= favicon_link_tag asset_pack_path 'media/images/dino_favicon.svg', rel: 'apple-touch-icon', type: 'image/svg+xml' %>
     <%= javascript_pack_tag 'application' %>
-    <!-- dooooooooode -->
-    <%= stylesheet_pack_tag 'application' %> 
-    <!-- end dooooooooode -->
+    <%= stylesheet_pack_tag 'application' %>
+    <%= javascript_pack_tag 'dyno_projects' %>
+    <%= stylesheet_pack_tag 'dyno_projects' %>
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function() {
+        window.dynoRoutes = {
+          currentRoute: "<%= controller_name %>",
+        }
+      })
+    </script>
   </head>
 
-  <body>
+  <body class="<%= controller_name %>">
   <%= yield %>
   </body>
 </html>
