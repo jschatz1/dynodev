@@ -1,12 +1,23 @@
 const { postAuth, getAuth, baseURL } = require("../services/auth");
+const dotenv = require('dotenv');
 const open = require('open');
+const fs = require('fs');
+const path = require('path');
+const homedir = require('os').homedir();
 const {
   chalk,
   stopSpinner,
   error,
   clearConsole,
 } = require("@vue/cli-shared-utils");
+let accessToken;
+let dynoConfigKey = "DYNO_ACCESS_TOKEN";
+let dynoPath = path.join(homedir, '.dyno')
 
+function saveToken(token) {
+  fs.writeFileSync(dynoPath, `${dynoConfigKey}=${token}`);
+  return true
+};
 
 async function openBrowser(url) {
   console.log(`${chalk.gray("Opening browser to")} ${chalk.green(`${url}`)}`);
@@ -28,6 +39,14 @@ async function fetchAuth(cli_url, token) {
       try{
         const {data} = await getAuth(cli_url, token);
         console.log(chalk.green(data.msg));
+        console.log(chalk.gray("Saving access token"));
+        try{
+          saveToken(data.token);
+        } catch(error) {
+          console.log("Could not save access token", error);
+        }
+        
+        return
       } catch(error) {
         if(tries > 3) {
           console.log(chalk.red("Could not log in successfully. Try again."))
@@ -43,9 +62,13 @@ async function fetchAuth(cli_url, token) {
   return retry();
 };
 
-module.exports.saveToken = async function saveToken(token) {
-
-};
+module.exports.getToken = function getToken() {
+  try{
+    return dotenv.parse(fs.readFileSync(dynoPath, { encoding: 'utf8' }))[dynoConfigKey];
+  } catch(error) {
+    console.log(chalk.red)
+  }
+}
 
 module.exports.loginUser = async function loginUser() {
   let urls;

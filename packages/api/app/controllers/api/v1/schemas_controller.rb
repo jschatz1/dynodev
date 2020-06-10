@@ -1,9 +1,8 @@
 require "json"
-require "pp"
 
 class Api::V1::SchemasController < ApplicationController
   before_action :set_schema, only: [:show, :edit, :update, :destroy]
-
+  before_action :authorize_cli, only: [:create]
   # GET /schemas
   # GET /schemas.json
   def index
@@ -33,7 +32,10 @@ class Api::V1::SchemasController < ApplicationController
   # POST /schemas
   # POST /schemas.json
   def create
-    project = Project.find_by(uuid: params[:project_id])
+    project = Project.find_by(uuid: params[:project_id], user_id: @current_user.id)
+    if project.nil?
+      not_found
+    end
     attributes = schema_params.clone
     contents = attributes[:contents]
     schemaFileService = SchemaFileService.new(contents)

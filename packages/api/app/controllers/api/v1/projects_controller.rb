@@ -1,10 +1,10 @@
 class Api::V1::ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
-
+  before_action :authorize_cli, only: [:create, :show, :index]
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    @projects = @current_user.projects
   end
 
   # GET /projects/1
@@ -30,6 +30,8 @@ class Api::V1::ProjectsController < ApplicationController
     else
       render json: @project.errors, status: :unprocessable_entity
     end
+
+    @current_user.projects << @project
 
   end
 
@@ -57,8 +59,7 @@ class Api::V1::ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.find_by(uuid: params[:id])
-      @project
+      @project = Project.find_by(uuid: params[:id], user_id: @current_user.id)
     end
 
     # Only allow a list of trusted parameters through.

@@ -47,7 +47,7 @@ class SchemaFileService
             "type" => "integer",
             "nullable" => false,
             "references" => {
-                "model" => association["pascal_singular"],
+                "model" => association["pascal"],
                 "key" => "id",
             },
           })

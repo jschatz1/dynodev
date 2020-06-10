@@ -36,15 +36,15 @@ program
   .description("Initialize an almond file")
   .action((cmd) => {
     const options = cleanArgs(cmd);
-
     require("../lib/init")(options);
   });
 
 program
   .command("hello")
   .description("Says Hello!")
-  .action(() => {
-    console.log(`Hey there! Welcome to Dyno! Version: ${currentVersion}`)
+  .action((cmd) => {
+    const options = cleanArgs(cmd);
+    require("../lib/hello")(options);
   })
 
 program

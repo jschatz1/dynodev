@@ -9,6 +9,7 @@ const execa = require("execa");
 const dotenv = require("dotenv");
 const MODE_0666 = parseInt("0666", 8);
 const MODE_0755 = parseInt("0755", 8);
+const sleep = util.promisify(setTimeout)
 
 const {
   chalk,
@@ -238,6 +239,7 @@ async function createApplication(name, dir, schemaAlmondFile) {
     migrationGenerationSTDOUT = await run(
       `yarn --cwd ${dir} sequelize-cli migration:generate --name "create_${model.underscore}"`
     );
+    await sleep(500);
     // console.log(chalk.gray(migrationGenerationSTDOUT.stdout));
   }
   let tryagain = 0;
@@ -264,7 +266,7 @@ async function createApplication(name, dir, schemaAlmondFile) {
         const foundMigrationFile = migrationFiles.find((migrationFile) =>
           migrationFile.includes(model.underscore)
         );
-        migrationTemplate.locals.model = model;
+        migrationTemplate.locals.model = {model, schema: schemaAlmondFile};
         write(
           path.join(dir, "migrations", foundMigrationFile),
           prettier.format(migrationTemplate.render(), {

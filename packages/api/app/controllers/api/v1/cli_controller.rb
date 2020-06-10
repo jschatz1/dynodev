@@ -2,6 +2,7 @@ require "uuidtools"
 require 'jwt'
 
 class Api::V1::CliController < ApplicationController
+  before_action :authorize_cli, only: [:cli_say_hello]
   def auth
     uuid = UUIDTools::UUID.random_create.to_s
     secret = ENV["SECRET_KEY"]
@@ -27,10 +28,20 @@ class Api::V1::CliController < ApplicationController
       decoded_token = JWT.decode bearer_token, secret, true, { algorithm: 'HS256' }
       key = decoded_data(decoded_token, "data")
       user_key = Key.find_by(uuid: key)
+      user_key.uuid = ""
+      user_key.save!
       json_response({msg: "Login to CLI Successful", token: user_key.access})
     rescue Exception => e
       json_response({msg: "Invalid token"}, :bad_request)
     end
+  end
+
+  def cli_say_hello
+    json_response({msg: "Hey #{@current_user.name}!
+  This is the server, speaking to you from another dimension.
+  Looks like everything is working!
+  Did you create a project yet?
+  Navigate to one of your frontend projects and run `dyno init`"});
   end
 
 private
