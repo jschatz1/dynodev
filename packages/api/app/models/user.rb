@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  before_create :save_secret_key
   has_one :key, dependent: :destroy
   has_many :projects
 

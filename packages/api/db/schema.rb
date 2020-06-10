@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2020_05_27_101553) do
     t.string "uid"
     t.string "name"
     t.string "email"
+    t.boolean "hello"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

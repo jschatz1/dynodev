@@ -6,6 +6,12 @@ class ApplicationController < ActionController::Base
 
   @@api = "/api/v1/"
 
+  Unauthenticated = Class.new(ActionController::RoutingError)
+
+  rescue_from ApplicationController::Unauthenticated do |exception|
+    render json: {status: "Unauthenticated", msg: "User is not authenticated. Sign in to continue"}, status: 401
+  end
+
   def set_format
     puts request.path
     if request.path.include? @@api
@@ -15,9 +21,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
+protected
+  def authenticate_request!
 
+  end
 
-private 
+private
+
+  def current_user_cli
+    token = auth_token
+    user_id = decoded_data(token, "data")
+    uuid = decoded_data(token, "uuid")
+    {user_id: user_id, uuid: uuid}
+  end
   
   def current_user
     begin
@@ -28,6 +44,25 @@ private
       redirect_to "/"
     end
   end
-
   helper_method :current_user
+
+  def authorize_cli
+    puts "authorize_cli"
+    begin
+      user_id = current_user_cli[:user_id]
+      @current_user ||= User.find(user_id)
+    rescue
+      @current_user = nil
+      raise ApplicationController::Unauthenticated.new("Unable to authenticate user")
+    end
+  end
+
+  def authorize
+    redirect_to "/", alert: "Not authorized" if current_user.nil?
+  end
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
+  
 end

@@ -6,7 +6,9 @@ Rails.application.routes.draw do
       end
       post 'cli/auth', action: :auth, controller: 'cli'
       get 'cli/auth/browser/:uuid', action: :browser_auth, controller: 'cli'
-      get 'cli/auth/', action: :cli_auth_from_token, controller: 'cli'
+      get 'cli/auth', action: :cli_auth_from_token, controller: 'cli'
+      get 'cli/hello', action: :cli_say_hello, controller: 'cli'
+      get 'users/user', action: :show, controller: 'users'
     end
   end
   resources :projects

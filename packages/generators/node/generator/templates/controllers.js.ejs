@@ -32,6 +32,7 @@ module.exports.show = async function show(req, res, next) {
 
 module.exports.update = async function update(req, res, next) {
   const id = req.params.id;
+  const reqBody = req.body;
   let <%- modelVariable %> = await models.<%- modelClass %>.findOne({
     where: {
       id,
@@ -62,7 +63,7 @@ module.exports.destroy = async function destroy(req, res, next) {
         id,
       }
     });
-    if(!modelVariable) {
+    if(!<%- modelVariable %>) {
       return res.status(404).json({ msg: "not found" });
     }
     await <%- modelVariable %>.destroy();

@@ -35,13 +35,19 @@ async function push(options) {
       )}`
     );
   } catch (error) {
-    console.log(
-      chalk.red(
-        "Unable to update remote at this time",
-        error,
-        JSON.stringify(error.response.data)
-      )
-    );
+    if(error.response.status === 404) {
+      console.log(
+        chalk.red(`The project with id ${jsonFileContents.project} does not exist or does not belong to you.`)
+      );
+    } else {
+      console.log(
+        chalk.red(
+          "Unable to update remote at this time",
+          error.response.status,
+          `${error.response.data.msg||""}`
+        )
+      );
+    }
   }
 }
 
