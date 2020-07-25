@@ -38,6 +38,14 @@ class Api::V1::SchemasController < ApplicationController
     end
     attributes = schema_params.clone
     contents = attributes[:contents]
+    # create git repo
+    gitRepoService = GitRepoService.new
+    if project.repo.nil?
+      new_git_project = gitRepoService.createProject(project.name)
+      resp = JSON.parse(new_git_project.body)
+      project.update_attribute("repo", resp["id"])
+    end
+    # fix the schema
     schemaFileService = SchemaFileService.new(contents)
     begin
       schemaFileService.validateProject

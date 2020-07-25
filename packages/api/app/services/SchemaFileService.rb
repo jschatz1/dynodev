@@ -1,5 +1,4 @@
 require "json"
-require "pp"
 
 class SchemaFileService
 

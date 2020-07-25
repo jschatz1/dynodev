@@ -32,9 +32,19 @@ program
 program
   .command("build <app-name>")
   .description("build from config file")
+  .option('-o, --output <string>', 'how to output data')
+  .option('-i, --input <string>', 'the json file as a string, otherwise looks for almond.json file in the current location.')
   .action((name, cmd) => {
     const options = cleanArgs(cmd);
     require("../lib/build")(name, options);
+  });
+
+program
+  .command("migrations-from-diff <file1> <file2>")
+  .description("generate migrations from diff of two almond files")
+  .action((file1, file2, cmd) => {
+    console.log(file1, file2);
+    require("../lib/diff")(file1, file2);
   });
 
 program.parse(process.argv);
