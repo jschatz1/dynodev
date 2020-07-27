@@ -51,13 +51,12 @@ module.exports.createModel = async function createModel() {
       "What is the name of the model you would like to create  (singular camelCase)?",
   });
   modelObj.name = model;
-  modelObj.properties = {};
+  modelObj.properties = [];
   modelObj.associations = [];
 
   async function createModelProperty() {
     const property = await createProperty(modelObj);
-    modelObj.properties[property.name] = ;
-
+    modelObj.properties.push(property);
   }
 
   const { createPropertiesNow } = await inquirer.prompt({

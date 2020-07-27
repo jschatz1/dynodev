@@ -10,16 +10,6 @@ const dotenv = require("dotenv");
 const MODE_0666 = parseInt("0666", 8);
 const MODE_0755 = parseInt("0755", 8);
 const sleep = util.promisify(setTimeout)
-let buildOptions = {
-  output: {
-    isJSON: false,
-  },
-  input: {
-    isJSON: false,
-    data: {},
-  }
-};
-let finalOutput = {};
 
 const {
   chalk,
@@ -95,17 +85,11 @@ function emptyDirectory(dir, fn) {
 
 function mkdir(base, dir) {
   const loc = path.join(base, dir);
-  if(buildOptions.output.isJSON) {
-    finalOutput[loc] = {}
-  } else {
-    console.log(chalk.green(`Creating ${loc}${path.sep}`));
-    mkdirp.sync(loc, MODE_0755);
-  }
+  console.log(chalk.green(`Creating ${loc}${path.sep}`));
+  mkdirp.sync(loc, MODE_0755);
 }
 
 function write(file, str, mode) {
-  console.log("file", file);
-  exit(1);
   fs.writeFileSync(file, str, { mode: mode || MODE_0666 });
   console.log(chalk.green(`Creating ${file}`));
 }
@@ -301,19 +285,8 @@ async function createApplication(name, dir, schemaAlmondFile) {
 }
 
 async function build(name, options) {
-  buildOptions.output.isJSON = options.output && options.output.toLowerCase() === "json";
-
-  try {
-    if(options.input) {
-      buildOptions.input.data = JSON.parse(options.input);
-      buildOptions.input.isJSON = true
-    }
-  } catch {
-    console.log(chalk.red('input JSON is invalid'));
-    exit(1);
-  }
   const targetDir = process.cwd();
-  if (!buildOptions.output.isJSON && !fs.existsSync(almondFile)) {
+  if (!fs.existsSync(almondFile)) {
     console.log(chalk.red(`missing ${almondFile}`));
     exit(1);
   }
@@ -321,15 +294,11 @@ async function build(name, options) {
     const schemaAlmondFile = JSON.parse(fs.readFileSync(almondFile, "utf8"));
     const destinationPath = `./api`;
     const appName = createAppName(path.resolve(destinationPath));
-    if(buildOptions.output.isJSON) {
-      await createApplication(appName, destinationPath, buildOptions.input.data);
-    } else {
-      emptyDirectory(destinationPath, async function (empty) {
-        await createApplication(appName, destinationPath, schemaAlmondFile);
-      });
-    }
+
+    emptyDirectory(destinationPath, async function (empty) {
+      await createApplication(appName, destinationPath, schemaAlmondFile);
+    });
   } catch (error) {
-    console.log(error)
     console.log(chalk.red(`Not a valid ${almondFile}`));
     console.log(chalk.red(error));
   }

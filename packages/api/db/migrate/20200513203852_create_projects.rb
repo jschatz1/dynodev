@@ -3,7 +3,6 @@ class CreateProjects < ActiveRecord::Migration[6.0]
     create_table :projects do |t|
       t.belongs_to :user
       t.string :name
-      t.string :repo
       t.text :description
       t.string :uuid
 
