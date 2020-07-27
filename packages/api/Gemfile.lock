@@ -236,7 +236,6 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15)
   dotenv-rails
-  faraday
   jbuilder (~> 2.7)
   jwt
   listen (~> 3.2)
