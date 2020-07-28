@@ -28,7 +28,14 @@ async function createProjectInput() {
   project.description = description;
 
   logWithSpinner("🎂", `Creating ${project.name}!`);
-  let createdProject = await createProject(project);
+  let createdProject;
+  try{
+    createdProject = await createProject(project);
+  } catch(error) {
+    chalk.red("Unable to create project", error)
+    stopSpinner();
+    return;
+  }
   createdProject = createdProject.data;
   stopSpinner();
   clearConsole();

@@ -11,6 +11,9 @@ module.exports.addAuthHeader = function() {
 }
 
 function otherStatus(error, url) {
+  if(!error.response) {
+    return chalk.red(error, url)
+  }
   const status = error.response.status
   return {status,
     msg: chalk.red(`Uh oh. There's a bug in our CLI. 

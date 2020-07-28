@@ -46,8 +46,15 @@ private
   end
   helper_method :current_user
 
+  def project_schema
+    if @project
+      @project_schema = nil
+    else
+      @project_schema = "#{@current_user.name}_#{@project.name}"
+    end
+  end
+
   def authorize_cli
-    puts "authorize_cli"
     begin
       user_id = current_user_cli[:user_id]
       @current_user ||= User.find(user_id)

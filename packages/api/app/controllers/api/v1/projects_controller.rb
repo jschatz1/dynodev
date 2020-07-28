@@ -1,6 +1,7 @@
 class Api::V1::ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
   before_action :authorize_cli, only: [:create, :show, :index]
+  after_action :create_project_schema, only: [:create]
   # GET /projects
   # GET /projects.json
   def index
@@ -54,6 +55,11 @@ class Api::V1::ProjectsController < ApplicationController
     respond_to do |format|
       format.json { head :no_content }
     end
+  end
+
+  def create_project_schema
+    sql = "CREATE SCHEMA IF NOT EXISTS \"#{@current_user.name}_#{@project.name}\";"
+    execution = ActiveRecord::Base.connection.execute(sql);
   end
 
   private
