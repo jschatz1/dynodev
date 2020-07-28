@@ -41,6 +41,13 @@ async function createProperty(model) {
   return propertyObj;
 }
 
+module.exports.createAuthModel = async function createAuthModel() {
+  return {
+    "auth": true,
+    "provider": "Github"
+  }
+}
+
 module.exports.createModel = async function createModel() {
   let modelObj = {};
   clearConsole();

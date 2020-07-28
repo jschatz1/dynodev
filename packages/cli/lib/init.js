@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const { almondFile, docsSite } = require("./config");
 const { getProjects } = require("../services/projects");
-const { createModel, createAssociationsForModels } = require("./modelCreate");
+const { createModel, createAuthModel, createAssociationsForModels } = require("./modelCreate");
 const { createProject, chooseProject } = require("./projectCreate");
 const {
   chalk,
@@ -41,10 +41,23 @@ async function init(options) {
       projectUUID = await chooseProject();
     }
 
+    const { createAuthModelNow } = await inquirer.prompt({
+      type: "confirm",
+      name: "createAuthModelNow",
+      message: "Shall we implement authentication for you?"
+    });
+
+    if (createAuthModelNow) {
+      const newAuthModel = await createAuthModel();
+      clearConsole();
+      listOfModelsToCreate.unshift(newAuthModel)
+      chalk.green("Your user model has been saved.")
+    }
+
     const { createModelsNow } = await inquirer.prompt({
       type: "confirm",
       name: "createModelsNow",
-      message: `Models are like tables in a database. Do you know what models you want to add to your ${almondFile}? You can always add them later.`,
+      message: `Models are like tables in a database. Do you know what models/tables you want to add to your ${almondFile}? You can always add them later.`,
     });
 
     if (createModelsNow) {

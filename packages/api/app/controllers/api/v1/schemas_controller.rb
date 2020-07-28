@@ -1,4 +1,5 @@
 require "json"
+require "pp"
 
 class Api::V1::SchemasController < ApplicationController
   before_action :set_schema, only: [:show, :edit, :update, :destroy]
@@ -15,8 +16,8 @@ class Api::V1::SchemasController < ApplicationController
   # GET /schemas/1
   # GET /schemas/1.json
   def show
-    project = Project.find_by(uuid: params[:project_id])
-    @schema = Schema.find_by(id: params[:id], project_id: project.id)
+    @project = Project.find_by(uuid: params[:project_id])
+    @schema = Schema.find_by(id: params[:id], project_id: @project.id)
     render json: @schema
   end
 
@@ -32,8 +33,8 @@ class Api::V1::SchemasController < ApplicationController
   # POST /schemas
   # POST /schemas.json
   def create
-    project = Project.find_by(uuid: params[:project_id], user_id: @current_user.id)
-    if project.nil?
+    @project = Project.find_by(uuid: params[:project_id], user_id: @current_user.id)
+    if @project.nil?
       not_found
     end
     attributes = schema_params.clone
@@ -42,9 +43,11 @@ class Api::V1::SchemasController < ApplicationController
     begin
       schemaFileService.validateProject
       attributes[:contents] = schemaFileService.addNameHelpers
+      schemaFileService.migrate("#{@current_user.name}_#{@project.name}")
       @schema = Schema.new(attributes)
-      @schema.project_id = project.id
+      @schema.project_id = @project.id
     rescue Exception => e
+      pp e
       return render json: {error: e.to_s}  , status: :unprocessable_entity
     end
 
