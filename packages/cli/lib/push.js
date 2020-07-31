@@ -5,13 +5,16 @@ const {
   clearConsole,
 } = require("@vue/cli-shared-utils");
 const fs = require("fs");
+const inquirer = require("inquirer");
 const { almondFile } = require("./config");
 const { validateFile } = require("./validator");
-const { createSchema } = require("../services/projects");
+const { createSchema, doesSchemaExist, createOauth2Client } = require("../services/projects");
+const _ = require("lodash");
 
 async function push(options) {
   console.log(chalk.cyan(`Checking your ${almondFile}`));
   const validationResult = await validateFile();
+  const projectUUID = validationResult.project.project;
   if (validationResult.result) {
     console.log(chalk.green(`Your ${almondFile} looks good to go!`));
   } else {
@@ -48,6 +51,50 @@ async function push(options) {
         )
       );
     }
+  }
+
+  if(_.find(jsonFileContents["models"], {"auth": true})) {
+      let exists = false;
+      try {
+        const doesSchemaExistsResult = await doesSchemaExist(validationResult.project.project);
+        exists = doesSchemaExistsResult.data.exists;
+      } catch(e) {}
+
+      if(exists) {
+        return;
+      }
+
+      console.log(chalk.white("Your app uses authentication! Let's set that up for you!"))
+
+      const { step1 } = await inquirer.prompt({
+        type: "confirm",
+        name: "step1",
+        message: `1 of 3. Go to https://github.com/settings/apps/ and click a "New GitHub App".\nFill in "GitHub App name" and "Homepage URL", and uncheck "Active" for the "Webhook URL"\nClick "Create GitHub App"\nWe'll fill in the rest in a second.\nWhen ready type Y`,
+      });
+      const { client_id } = await inquirer.prompt({
+        type: "input",
+        name: "client_id",
+        message: `2 of 3. In your new app, what is your "Client ID"?`,
+      });
+
+      const { client_secret } = await inquirer.prompt({
+        type: "input",
+        name: "client_secret",
+        message: `3 of 3. In your new app, what is your "Client secret"?`,
+      });
+      try {
+        await createOauth2Client(
+          projectUUID, {
+            client_id,
+            client_secret,
+          }
+        );
+        console.log(chalk.green("Your OAuth information has been securely saved!"));
+        console.log(chalk.green("You can now add a sign in with GitHub button to your app!"));
+      } catch(error) {
+        console.log(chalk.red("Could not save your Client ID and Client secret."));
+        console.log(error);
+      }
   }
 }
 

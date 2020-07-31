@@ -21,6 +21,7 @@ async function init(options) {
   let listOfModelsToCreate = [];
   let toWriteToFile = "";
   let projectUUID = "";
+  let didAddAuth = false;
 
   if (!fs.existsSync(almondFile)) {
     createInitFile = true;
@@ -48,10 +49,11 @@ async function init(options) {
     });
 
     if (createAuthModelNow) {
-      const newAuthModel = await createAuthModel();
+      const newAuthModel = await createAuthModel(projectUUID);
       clearConsole();
       listOfModelsToCreate.unshift(newAuthModel)
-      chalk.green("Your user model has been saved.")
+      console.log(chalk.green("Your user model has been saved."));
+      didAddAuth = true;
     }
 
     const { createModelsNow } = await inquirer.prompt({
@@ -104,11 +106,10 @@ async function init(options) {
   } else {
     console.log(chalk.red(`🤷‍♀️ ${almondFile} was not created`));
   }
-  console.log(
-    `\n📘📓📗 Visit our docs for some next steps:\n📕📙📒 ${chalk.cyan(
-      docsSite
-    )}`
-  );
+
+  if(didAddAuth) {
+    console.log("")
+  }
 }
 
 module.exports = (...args) => {

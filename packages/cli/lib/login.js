@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const minimist = require("minimist");
 const path = require("path");
 const fs = require("fs");
+const { companyName } = require("./config");
 const { loginUser } = require("./loginUser");
 const {
   stopSpinner,
@@ -15,7 +16,7 @@ async function login(options) {
   const { confirmLogin } = await inquirer.prompt({
     type: "confirm",
     name: "confirmLogin",
-    message: `This will open your browser for you to log into Dyno?`,
+    message: `This will open your browser to log into ${companyName}?`,
   });
   await loginUser();
 }

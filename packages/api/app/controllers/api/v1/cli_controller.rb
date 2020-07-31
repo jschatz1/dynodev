@@ -1,8 +1,14 @@
 require "uuidtools"
 require 'jwt'
+require "pp"
 
 class Api::V1::CliController < ApplicationController
-  before_action :authorize_cli, only: [:cli_say_hello]
+  before_action :authorize_cli, only: [
+    :cli_say_hello,
+    :create_oauth2_client,
+    :cli_auth_initialized
+  ]
+
   def auth
     uuid = UUIDTools::UUID.random_create.to_s
     secret = ENV["SECRET_KEY"]
@@ -36,6 +42,50 @@ class Api::V1::CliController < ApplicationController
     end
   end
 
+  def create_oauth2_client
+    client_id = cli_params[:client_id]
+    client_secret = cli_params[:client_secret]
+    @project = Project.find_by(uuid: params[:project_id])
+    schema_name = "#{@current_user.name}_#{@project.name}"
+    table_name = "oauth_clients"
+    existing_client_id_sql = <<-EXISTINGCLIENTIDSQL
+      SELECT COUNT(*) FROM "#{schema_name}"."#{table_name}" WHERE "client_id" = '#{client_id}';
+    EXISTINGCLIENTIDSQL
+    existing_client_id_execution = ActiveRecord::Base.connection.execute(existing_client_id_sql)
+    if existing_client_id_execution.values[0][0] == 0
+      sql = <<-INSERTSQL
+        INSERT INTO "#{schema_name}"."#{table_name}"
+        (client_id, client_secret, redirect_uri, created_at, updated_at)
+        VALUES
+        ('#{client_id}', '#{client_secret}', 'https://localhost:3000', NOW(), NOW());
+      INSERTSQL
+      execution = ActiveRecord::Base.connection.execute(sql);
+    end
+    json_response({msg: "Saved!"})
+  end
+
+  def cli_auth_initialized
+    @project = Project.find_by(uuid: params[:project_id])
+    schema_name = "#{@current_user.name}_#{@project.name}"
+    check_if_table_exists_sql = <<-DOESTABLEEXIST
+    SELECT EXISTS (
+     SELECT FROM information_schema.tables 
+     WHERE  table_schema = '#{schema_name}'
+     AND    table_name   = 'oauth_clients'
+    );
+    DOESTABLEEXIST
+    execution = ActiveRecord::Base.connection.execute(check_if_table_exists_sql);
+    exists = execution.values[0][0]
+    if exists
+      check_if_client_id_exists_sql = <<-DOESCLIENTIDEXIST
+        SELECT COUNT(*) FROM #{schema_name}.oauth_clients LIMIT 1;
+      DOESCLIENTIDEXIST
+      execution = ActiveRecord::Base.connection.execute(check_if_client_id_exists_sql);
+      exists = execution.values[0][0]
+    end
+    json_response({exists: exists})
+  end
+
   def cli_say_hello
     json_response({msg: "Hey #{@current_user.name}!
   This is the server, speaking to you from another dimension.
@@ -49,6 +99,10 @@ private
     pattern = /^Bearer /
     header  = request.headers['Authorization']
     header.gsub(pattern, '') if header && header.match(pattern)
+  end
+
+  def cli_params
+    params.require(:cli).permit(:client_id, :client_secret)
   end
 
 end
