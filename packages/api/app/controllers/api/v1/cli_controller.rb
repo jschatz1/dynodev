@@ -90,8 +90,9 @@ class Api::V1::CliController < ApplicationController
     json_response({msg: "Hey #{@current_user.name}!
   This is the server, speaking to you from another dimension.
   Looks like everything is working!
-  Did you create a project yet?
-  Navigate to one of your frontend projects and run `dyno init`"});
+  You can create a project, or add almond to your existing backend with `almond init`!
+  Try it today!
+  Navigate to one of your frontend projects and run `almond init`"});
   end
 
 private

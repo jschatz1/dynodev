@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const { almondFile, docsSite } = require("./config");
 const { getProjects } = require("../services/projects");
+const { JSONFileContentsAs, writeToFile }  = require("./fileCreate");
 const { createModel, createAuthModel, createAssociationsForModels } = require("./modelCreate");
 const { createProject, chooseProject } = require("./projectCreate");
 const {
@@ -15,7 +16,6 @@ const {
 } = require("@vue/cli-shared-utils");
 
 async function init(options) {
-  const targetDir = process.cwd();
   clearConsole();
   let createInitFile = false;
   let listOfModelsToCreate = [];
@@ -93,15 +93,14 @@ async function init(options) {
   }
 
   if (createInitFile) {
-    toWriteToFile = JSON.stringify(
-      {
-        project: projectUUID,
-        models: listOfModelsToCreate,
-      },
-      null,
-      2
-    );
-    fs.writeFileSync(`${targetDir}/${almondFile}`, toWriteToFile);
+    toWriteToFile = JSONFileContentsAs(
+    {
+      project: projectUUID,
+      models: listOfModelsToCreate
+    });
+
+    writeToFile(toWriteToFile);
+
     console.log(chalk.green(`🎉  ${almondFile} has been created`));
   } else {
     console.log(chalk.red(`🤷‍♀️ ${almondFile} was not created`));
