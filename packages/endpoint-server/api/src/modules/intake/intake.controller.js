@@ -1,9 +1,6 @@
-const { QueryTypes } = require('sequelize');
+const { QueryTypes } = require("sequelize");
 const models = require("../../models");
-
-function getTable({username, project, model}) {
-  return `${username}_${project}.${model}`;
-}
+const { getTable } = require("./intake.utils");
 
 module.exports.create = async function create(req, res, next) {
   const reqBody = req.body;
@@ -81,7 +78,7 @@ module.exports.destroy = async function destroy(req, res, next) {
     }
     await intake.destroy();
   } catch (error) {
-    return res.status(422).json({ msg: "cannot delete intake" });
+    return res.status(404).json({ msg: "cannot delete intake" });
   }
 };
 
@@ -93,6 +90,14 @@ module.exports.index = async function index(req, res, next) {
     return res.json({results})
   } catch (error) {
     console.trace(error);
-    return res.status(422).json({ msg: `unable to find ${model}`, error });
+    return res.status(404).json({ msg: `unable to find ${model}` });
   }
 };
+
+
+module.exports.authGitHub = function() {}
+
+// auth
+module.exports.authGitHubCallback = function authGitHubCallback(req, res) {
+  res.redirect("/");
+}

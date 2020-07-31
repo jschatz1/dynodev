@@ -23,5 +23,5 @@ module.exports.validateFile = async function validateFile() {
     };
   }
 
-  return { result: true };
+  return { result: true, project: projectJSON };
 };

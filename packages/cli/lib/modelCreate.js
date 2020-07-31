@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const _ = require("lodash");
-const { clearConsole } = require("@vue/cli-shared-utils");
+const { clearConsole, chalk } = require("@vue/cli-shared-utils");
+const { createOauth2Client } = require("../services/projects");
 const { almondFile } = require("./config");
 
 async function createProperty(model) {
@@ -41,7 +42,7 @@ async function createProperty(model) {
   return propertyObj;
 }
 
-module.exports.createAuthModel = async function createAuthModel() {
+module.exports.createAuthModel = async function createAuthModel(projectUUID) {
   return {
     "auth": true,
     "provider": "Github"

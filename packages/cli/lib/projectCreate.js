@@ -8,12 +8,23 @@ const {
   clearConsole,
 } = require("@vue/cli-shared-utils");
 const _ = require("lodash");
+const fs = require("fs");
 
 async function createProjectInput() {
   let project = {};
+  let defaultProject = "my-awesome-project"
+  const packageJSON = "./package.json";
+  if(fs.existsSync(packageJSON)) {
+    try{
+      defaultProject = JSON.parse(fs.readFileSync(packageJSON))["name"];
+    } catch(e) {
+      console.log(chalk.red("BTW, your package.json file is missing or invalid."));
+    }
+  }
   const { name } = await inquirer.prompt({
     type: "input",
     name: "name",
+    default: defaultProject,
     message: `Let's create a project first!\nWhat would you like to name the project?`,
   });
 
@@ -32,7 +43,7 @@ async function createProjectInput() {
   try{
     createdProject = await createProject(project);
   } catch(error) {
-    chalk.red("Unable to create project", error)
+    console.log(chalk.red("Unable to create project", error));
     stopSpinner();
     return;
   }

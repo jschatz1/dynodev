@@ -4,6 +4,7 @@ const {
   chalk,
   error,
 } = require("@vue/cli-shared-utils");
+const {commandName, repoLocation} = require("../lib/config");
 
 module.exports.addAuthHeader = function() {
   const authToken = getToken();
@@ -18,12 +19,12 @@ function otherStatus(error, url) {
   return {status,
     msg: chalk.red(`Uh oh. There's a bug in our CLI. 
       Do you mind reporting the bug to our Git Repo?
-      https://github.com/jschatz1/dyno_cli/issues/new?title=Error ${status}&body=${encodeURIComponent(url)}
+      ${repoLocation}/issues/new?title=Error ${status}&body=${encodeURIComponent(url)}
       Status ${status} for ${url}.`)};
 }
 
 function unauthenticatedStatus() {
-  return {status: 401, msg: chalk.red("You are not logged in. Try `dyno login`")};
+  return {status: 401, msg: chalk.red(`You are not logged in. Try \`${commandName} login\``)};
 }
 
 module.exports.get = async function(url) {
