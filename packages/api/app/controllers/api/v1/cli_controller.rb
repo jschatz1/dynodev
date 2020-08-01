@@ -6,7 +6,8 @@ class Api::V1::CliController < ApplicationController
   before_action :authorize_cli, only: [
     :cli_say_hello,
     :create_oauth2_client,
-    :cli_auth_initialized
+    :cli_auth_initialized,
+    :get_routes
   ]
 
   def auth
@@ -84,6 +85,59 @@ class Api::V1::CliController < ApplicationController
       exists = execution.values[0][0]
     end
     json_response({exists: exists})
+  end
+
+  def get_routes
+    @project = Project.find_by(uuid: params[:project_id])
+    schema_name = "#{@current_user.name}_#{@project.name}"
+    list_of_tables = <<-LISTOFTABLES
+    SELECT "table_name" FROM information_schema.tables
+    WHERE table_schema = '#{schema_name}'
+    LISTOFTABLES
+    execution = ActiveRecord::Base.connection.execute(list_of_tables)
+    tables_filtered = execution.values.flatten - ['users', 'oauth_tokens', 'oauth_clients']
+    tables_with_hashes = tables_filtered.map { |table|
+      list_of_columns = <<-LISTOFCOLUMNS
+      SELECT column_name,data_type 
+      FROM information_schema.columns 
+      where table_schema = '#{schema_name}'
+      AND table_name = '#{table}';
+      LISTOFCOLUMNS
+      execution = ActiveRecord::Base.connection.execute(list_of_columns)
+      properties = execution.values.map { |v| {name: v[0], type: v[1]  }} - ['id']
+      {
+        name: table,
+        properties: properties,
+        urls: [
+          {
+            method: "GET",
+            url: "/api/v1/#{@current_user.name}/#{@project.name}/#{table}",
+            verb: "index"
+          },
+          {
+            method: "POST",
+            url: "/api/v1/#{@current_user.name}/#{@project.name}/#{table}",
+            verb: "create"
+          },
+          {
+            method: "GET",
+            url: "/api/v1/#{@current_user.name}/#{@project.name}/#{table}/:id",
+            verb: "read"
+          },
+          {
+            method: "PUT",
+            url: "/api/v1/#{@current_user.name}/#{@project.name}/#{table}/:id",
+            verb: "update"
+          },
+          {
+            method: "DELETE",
+            url: "/api/v1/#{@current_user.name}/#{@project.name}/#{table}/:id",
+            verb: "destroy"
+          }
+        ]
+      }
+    }
+    json_response({tables: tables_with_hashes})
   end
 
   def cli_say_hello

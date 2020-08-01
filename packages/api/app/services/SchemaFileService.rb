@@ -19,6 +19,7 @@ class SchemaFileService
 
   def migrate(schema)
     sql = Array.new
+    add_authorize_table(schema)
     @model["models"].each { |model|
       model["properties"].unshift(
         {"name" => "id",
@@ -41,10 +42,22 @@ class SchemaFileService
           "unique" => false,
           "nullable" => false
         })
-
-      create_table_sql = <<-CREATE_TABLE_SQL
+      drop_table_sql = <<-DROP_TABLE_SQL
       DROP TABLE IF EXISTS "#{schema}"."#{model["underscore"]}";
-      CREATE TABLE "#{schema}"."#{model["underscore"]}"
+      DROP_TABLE_SQL
+      if model["name"] == "oauth_clients" || model["name"] == "oauth_tokens"
+        drop_table_sql = ""
+        create_table_if_not_exists_sql = <<-CREATE_TABLE_IF_NOT_EXISTS_SQL
+        CREATE TABLE IF NOT EXISTS "#{schema}"."#{model["underscore"]}"
+        CREATE_TABLE_IF_NOT_EXISTS_SQL
+      else
+        create_table_if_not_exists_sql = <<-CREATE_TABLE_IF_NOT_EXISTS_SQL
+        CREATE TABLE "#{schema}"."#{model["underscore"]}"
+        CREATE_TABLE_IF_NOT_EXISTS_SQL
+      end
+      create_table_sql = <<-CREATE_TABLE_SQL
+      #{drop_table_sql}
+      #{create_table_if_not_exists_sql}
       (
         #{table_properties(model["properties"])}
       )
@@ -55,6 +68,7 @@ class SchemaFileService
       CREATE_TABLE_SQL
 
       sql.push(create_table_sql)
+      migrate_authorized_actions(schema, model)
     }
     execution = ActiveRecord::Base.connection.execute(sql.join("\n"))
   end
@@ -134,6 +148,44 @@ class SchemaFileService
   end
 
   private
+
+  def add_authorize_table(schema)
+    create_table_sql = <<-CREATE_TABLE_SQL
+      DROP TABLE IF EXISTS "#{schema}"."authorized_routes";
+      CREATE TABLE "#{schema}"."authorized_routes"
+      (
+        id BIGSERIAL NOT NULL PRIMARY KEY,
+        model VARCHAR(256) NOT NULL,
+        action VARCHAR(256) NOT NULL
+      )
+      WITH (
+        OIDS = FALSE
+      );
+      ALTER TABLE "#{schema}"."authorized_routes" OWNER to jacobschatz;
+      CREATE_TABLE_SQL
+    execution = ActiveRecord::Base.connection.execute(create_table_sql)
+  end
+
+  def migrate_authorized_actions(schema, model)
+    if model.key?("authorize")
+      approved_actions = ["index", "create", "read", "update", "destroy"]
+      add_auth_actions = Array.new
+      model["authorize"].each{ |action|
+        if approved_actions.include? action
+          # table, action
+          # having an action means it should be authorized
+          add_auth_actions.push("('#{model["underscore"]}', '#{action}')")
+        end
+      }
+      if add_auth_actions.count
+        insert_auth_sql = <<-INSERT_TABLE_SQL
+        INSERT INTO "#{schema}"."authorized_routes" (model, action)
+        VALUES #{add_auth_actions.join(",")};
+        INSERT_TABLE_SQL
+        execution = ActiveRecord::Base.connection.execute(insert_auth_sql)
+      end
+    end
+  end
 
   def table_properties(properties)
     properties.map { |property|

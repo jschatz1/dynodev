@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       get 'cli/auth', action: :cli_auth_from_token, controller: 'cli'
       get 'cli/hello', action: :cli_say_hello, controller: 'cli'
       get 'cli/:project_id/auth_initialized', action: :cli_auth_initialized, controller: 'cli'
+      get 'cli/:project_id/routes', action: :get_routes, controller: 'cli'
       get 'users/user', action: :show, controller: 'users'
     end
   end
