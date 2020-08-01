@@ -25,8 +25,14 @@ module.exports.formatJSONFile = function formatJSONFile(data) {
   );
 }
 
-module.exports.getJSONFileContents = function getJSONFileContents() {
+function getJSONFileContents() {
   return JSON.parse(fs.readFileSync(path.join(targetDir, almondFile), 'utf8'));
+}
+
+module.exports.getJSONFileContents = getJSONFileContents;
+
+module.exports.getCurrentProjectId = function getCurrentProjectId() {
+  return getJSONFileContents()["project"]
 }
 
 module.exports.writeToFile = function writeToFile(data) {

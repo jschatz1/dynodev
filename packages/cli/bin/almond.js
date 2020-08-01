@@ -48,6 +48,14 @@ program
   })
 
 program
+  .command("routes")
+  .description("Get available API routes")
+  .action((cmd) => {
+    const options = cleanArgs(cmd);
+    require("../lib/routes")(options);
+  })
+
+program
   .command("projects")
   .description("Gets a list of your current projects")
   .action((cmd) => {

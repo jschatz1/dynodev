@@ -14,6 +14,22 @@ const { getSchema, getClientsTable } = require("./intake.utils");
 
 const doNotQuery = ["users", "oauth_clients", "oauth_tokens"]
 
+function shouldAuthorize(verb) {
+  return (req, res, next) => {
+    models.sequelize.query(
+      `SELECT * FROM ${getSchema(req.params)}."authorized_routes"
+      WHERE "model" = '${req.params.model}' AND "action" = '${verb}' LIMIT 1;`
+    )
+    .then(function(result) {
+      if(result.length > 0){
+        return passport.authenticate('github')(req, res, next);
+      } else {
+        next();
+      }
+    })
+  }
+}
+
 function canQuery(req, res, next) {
   const {model} = req.params;
   models.sequelize.query(
@@ -47,7 +63,6 @@ function getClientForSchema(req, res, next) {
 }
 
 function useGitHub(req, res, next) {
-  console.log("res.locals.client", res.locals.client)
   passport.use(
       new GitHubStrategy({
         clientID: res.locals.client.client_id,
@@ -69,7 +84,7 @@ function unuseGitHub(req, res, next) {
   next();
 }
 
-routes.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), intakeController.authGitHubCallback);
+routes.get('/auth/github/callback', passport.authenticate('github'), intakeController.authGitHubCallback);
 routes.get("/:username/:project/auth/github",
   getClientForSchema,
   unuseGitHub,
@@ -77,10 +92,10 @@ routes.get("/:username/:project/auth/github",
   passport.authenticate('github', 
     { scope: [ 'user:email' ] }), 
   intakeController.authGitHub);
-routes.post("/:username/:project/:model",canQuery, intakeController.create);
-routes.get("/:username/:project/:model/:id",canQuery, intakeController.show);
-routes.put("/:username/:project/:model/:id",canQuery, intakeController.update);
-routes.delete("/:username/:project/:model/:id",canQuery, intakeController.destroy);
-routes.get("/:username/:project/:model",canQuery, intakeController.index);
+routes.get("/:username/:project/:model",canQuery, getClientForSchema, unuseGitHub, useGitHub, shouldAuthorize("index"), intakeController.index);
+routes.post("/:username/:project/:model",canQuery, getClientForSchema, unuseGitHub, useGitHub, shouldAuthorize("create"), intakeController.create);
+routes.get("/:username/:project/:model/:id",canQuery, getClientForSchema, unuseGitHub, useGitHub, shouldAuthorize("read"), intakeController.show);
+routes.put("/:username/:project/:model/:id",canQuery, getClientForSchema, unuseGitHub, useGitHub, shouldAuthorize("update"), intakeController.update);
+routes.delete("/:username/:project/:model/:id",canQuery, getClientForSchema, unuseGitHub, useGitHub, shouldAuthorize("destroy"), intakeController.destroy);
 
 module.exports = routes;

@@ -21,6 +21,10 @@ module.exports.doesSchemaExist = async function doesSchemaExist(projectUUID) {
   return axios.get(`/api/v1/cli/${projectUUID}/auth_initialized`);
 }
 
+module.exports.getProjectRoutes = async function getProjectRoutes(projectUUID) {
+  return axios.get(`/api/v1/cli/${projectUUID}/routes`);
+}
+
 module.exports.getProjects = async function getProjects() {
   return common.get("/api/v1/projects");
 };
