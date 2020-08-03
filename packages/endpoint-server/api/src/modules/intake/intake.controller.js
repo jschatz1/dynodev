@@ -20,6 +20,10 @@ module.exports.create = async function create(req, res, next) {
   }
 };
 
+module.exports.hello = function hello(req, res) {
+  return res.json({msg: "Hello"});
+}
+
 module.exports.show = async function show(req, res) {
   const id = req.params.id;
   const model = req.params.model;

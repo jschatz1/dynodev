@@ -236,7 +236,7 @@ class SchemaFileService
           "name"=>"email",
           "type"=>"email",
           "unique"=>true,
-          "nullable"=>false
+          "nullable"=>true
         },
         {
           "name"=>"profile_pic",
@@ -260,7 +260,7 @@ class SchemaFileService
           "name"=>"uid",
           "type"=>"string",
           "unique"=>false,
-          "nullable"=>true
+          "nullable"=>false
         }
       ],
       "associations"=>[]
