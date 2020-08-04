@@ -18,7 +18,7 @@ async function createProjectInput() {
     try{
       defaultProject = JSON.parse(fs.readFileSync(packageJSON))["name"];
     } catch(e) {
-      console.log(chalk.red("BTW, your package.json file is missing or invalid."));
+      console.log(chalk.red("Hey! Your missing a package.json file or your package.json file isn't quite valid!"));
     }
   }
   const { name } = await inquirer.prompt({

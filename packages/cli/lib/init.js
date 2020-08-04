@@ -1,9 +1,11 @@
 const inquirer = require("inquirer");
 const minimist = require("minimist");
+const _ = require("lodash");
 const path = require("path");
 const fs = require("fs");
 const { almondFile, docsSite } = require("./config");
 const { getProjects } = require("../services/projects");
+const { JSONFileContentsAs, writeToFile }  = require("./fileCreate");
 const { createModel, createAuthModel, createAssociationsForModels } = require("./modelCreate");
 const { createProject, chooseProject } = require("./projectCreate");
 const {
@@ -15,7 +17,6 @@ const {
 } = require("@vue/cli-shared-utils");
 
 async function init(options) {
-  const targetDir = process.cwd();
   clearConsole();
   let createInitFile = false;
   let listOfModelsToCreate = [];
@@ -45,12 +46,11 @@ async function init(options) {
     const { createAuthModelNow } = await inquirer.prompt({
       type: "confirm",
       name: "createAuthModelNow",
-      message: "Shall we implement authentication for you?"
+      message: "Do you want Sign in with GitHub?"
     });
 
     if (createAuthModelNow) {
       const newAuthModel = await createAuthModel(projectUUID);
-      clearConsole();
       listOfModelsToCreate.unshift(newAuthModel)
       console.log(chalk.green("Your user model has been saved."));
       didAddAuth = true;
@@ -59,14 +59,26 @@ async function init(options) {
     const { createModelsNow } = await inquirer.prompt({
       type: "confirm",
       name: "createModelsNow",
-      message: `Models are like tables in a database. Do you know what models/tables you want to add to your ${almondFile}? You can always add them later.`,
+      message: `Add models? You can always add them later.`,
     });
 
     if (createModelsNow) {
       async function doIt() {
-        const newModel = await createModel();
+        const newModel = await createModel(listOfModelsToCreate);
+
+        // find the index of the user model
+        const userModelIndex = _.findIndex(listOfModelsToCreate, ['name', 'user']);
+        // find the index of the 
+        const hasScopeWithUser = _.some(_.values(newModel.scope), _.matches("user"))
+        if(userModelIndex > -1 && hasScopeWithUser) {
+          listOfModelsToCreate[userModelIndex].associations.push({
+              "related": newModel.name,
+              "type": "hasMany"
+            });
+        }
+
         listOfModelsToCreate.push(newModel);
-        clearConsole();
+
         const { createAnotherModel } = await inquirer.prompt({
           type: "confirm",
           name: "createAnotherModel",
@@ -82,7 +94,7 @@ async function init(options) {
     const { createAssociationNow } = await inquirer.prompt({
       type: "confirm",
       name: "createAssociationNow",
-      message: `Do you want to create associations with your models?`,
+      message: `Add associations to your models?`,
     });
 
     if (createAssociationNow) {
@@ -93,22 +105,17 @@ async function init(options) {
   }
 
   if (createInitFile) {
-    toWriteToFile = JSON.stringify(
-      {
-        project: projectUUID,
-        models: listOfModelsToCreate,
-      },
-      null,
-      2
-    );
-    fs.writeFileSync(`${targetDir}/${almondFile}`, toWriteToFile);
+    toWriteToFile = JSONFileContentsAs(
+    {
+      project: projectUUID,
+      models: listOfModelsToCreate
+    });
+
+    writeToFile(toWriteToFile);
+
     console.log(chalk.green(`🎉  ${almondFile} has been created`));
   } else {
     console.log(chalk.red(`🤷‍♀️ ${almondFile} was not created`));
-  }
-
-  if(didAddAuth) {
-    console.log("")
   }
 }
 

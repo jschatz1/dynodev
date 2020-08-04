@@ -2,7 +2,7 @@
 
 const { chalk, semver } = require("@vue/cli-shared-utils");
 const commander = require("commander");
-const { almondFile } = require("../lib/config");
+const { almondFile, companyName } = require("../lib/config");
 const package = require("../package.json");
 const requiredVersion = package.engines.node;
 const currentVersion = package.version;
@@ -33,7 +33,7 @@ program
 
 program
   .command("init")
-  .description("Initialize an almond file")
+  .description("Initialize an almond file. The best place to get started.")
   .action((cmd) => {
     const options = cleanArgs(cmd);
     require("../lib/init")(options);
@@ -48,8 +48,32 @@ program
   })
 
 program
+  .command("routes")
+  .description("Get available API routes")
+  .action((cmd) => {
+    const options = cleanArgs(cmd);
+    require("../lib/routes")(options);
+  })
+
+program
+  .command("projects")
+  .description("Gets a list of your current projects")
+  .action((cmd) => {
+    const options = cleanArgs(cmd);
+    require("../lib/projects")(options);
+  })
+
+program
+  .command("link")
+  .description(`Link an existing project to your current ${almondFile} file.`)
+  .action((cmd) => {
+    const options = cleanArgs(cmd);
+    require("../lib/link")(options);
+  })
+
+program
   .command("login")
-  .description("Log in to Dyno")
+  .description(`Log in to ${companyName}`)
   .action((cmd) => {
     const options = cleanArgs(cmd);
 
@@ -103,7 +127,7 @@ function makeAddCommand() {
   return add;
 }
 
-program.addCommand(makeAddCommand());
+// program.addCommand(makeAddCommand());
 
 program.parse(process.argv);
 
