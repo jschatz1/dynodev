@@ -20,7 +20,12 @@ class SchemaFileService
   def migrate(schema)
     sql = Array.new
     add_authorize_table(schema)
+    add_scope_table(schema)
     @model["models"].each { |model|
+      if model["properties"].nil?
+        model["properties"] = Array.new
+      end
+
       model["properties"].unshift(
         {"name" => "id",
           "type" => "bigserial",
@@ -69,6 +74,7 @@ class SchemaFileService
 
       sql.push(create_table_sql)
       migrate_authorized_actions(schema, model)
+      migrate_scoped_routes(schema, model)
     }
     execution = ActiveRecord::Base.connection.execute(sql.join("\n"))
   end
@@ -97,8 +103,9 @@ class SchemaFileService
     }
 
     if !has_auth_index.nil?
-      @model["models"].delete_at(has_auth_index) 
-      @model["models"] = auth_hashes + @model["models"]
+      user_model = @model["models"][has_auth_index]
+      @model["models"].delete_at(has_auth_index)
+      @model["models"] = auth_hashes(user_model) + @model["models"]
     end
 
     @model["models"] = @model["models"].map { |model|
@@ -118,7 +125,7 @@ class SchemaFileService
         case association["type"]
         when "belongsTo"
           model["properties"].push({
-            "name" => "#{association["pascal_singular"]}Id",
+            "name" => "#{association["underscore_singular"]}_id",
             "type" => "integer",
             "nullable" => false,
             "references" => {
@@ -130,7 +137,7 @@ class SchemaFileService
           modelIndexToUpdate = @model["models"].index{ | m | m["name"] == association["related"] }
           if !modelIndexToUpdate.nil?
             @model["models"][modelIndexToUpdate]["properties"].push({
-              "name" => "#{model["pascal_singular"]}Id",
+              "name" => "#{model["underscore_singular"]}_id",
               "type" => "integer",
               "nullable" => false,
               "references" => {
@@ -148,6 +155,45 @@ class SchemaFileService
   end
 
   private
+
+  def add_scope_table(schema)
+    create_scope_sql = <<-CREATE_TABLE_SQL
+      DROP TABLE IF EXISTS "#{schema}"."scoped_routes";
+      CREATE TABLE "#{schema}"."scoped_routes"
+      (
+        id BIGSERIAL NOT NULL PRIMARY KEY,
+        model VARCHAR(256) NOT NULL,
+        action VARCHAR(256) NOT NULL,
+        scope VARCHAR(256) NOT NULL
+      )
+      WITH (
+        OIDS = FALSE
+      );
+      ALTER TABLE "#{schema}"."scoped_routes" OWNER to jacobschatz;
+      CREATE_TABLE_SQL
+    execution = ActiveRecord::Base.connection.execute(create_scope_sql)
+  end
+
+  def migrate_scoped_routes(schema, model)
+    if model.key?("scope")
+      approved_actions = ["index", "create", "read", "update", "destroy"]
+      approved_scopes = ["user", "all", "none"]
+      add_scope_actions = Array.new
+      model["scope"].each{ |action, value|
+        if approved_scopes.include?(value) && approved_actions.include?(action)
+          # table, action, scope
+          add_scope_actions.push("('#{model["underscore"]}', '#{action}', '#{value}')")
+        end
+      }
+      if add_scope_actions.count > 0
+        insert_scope_sql = <<-INSERT_TABLE_SQL
+        INSERT INTO "#{schema}"."scoped_routes" (model, action, scope)
+        VALUES #{add_scope_actions.join(",")};
+        INSERT_TABLE_SQL
+        execution = ActiveRecord::Base.connection.execute(insert_scope_sql)
+      end
+    end
+  end
 
   def add_authorize_table(schema)
     create_table_sql = <<-CREATE_TABLE_SQL
@@ -177,7 +223,7 @@ class SchemaFileService
           add_auth_actions.push("('#{model["underscore"]}', '#{action}')")
         end
       }
-      if add_auth_actions.count
+      if add_auth_actions.count > 0
         insert_auth_sql = <<-INSERT_TABLE_SQL
         INSERT INTO "#{schema}"."authorized_routes" (model, action)
         VALUES #{add_auth_actions.join(",")};
@@ -222,7 +268,7 @@ class SchemaFileService
     }.join(", ")
   end
 
-  def auth_hashes
+  def auth_hashes(user_model)
     [{
       "name"=>"user",
       "properties"=>[
@@ -263,7 +309,9 @@ class SchemaFileService
           "nullable"=>false
         }
       ],
-      "associations"=>[]
+      "associations"=> user_model.nil? ? [] : user_model["associations"],
+      "authorize": user_model.nil? ? [] : user_model["authorize"],
+      "scope": user_model.nil? ? [] : user_model["scope"]
     },
     {
       "name"=>"oauth_tokens",

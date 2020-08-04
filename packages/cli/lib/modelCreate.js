@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const _ = require("lodash");
 const { clearConsole, chalk } = require("@vue/cli-shared-utils");
 const { createOauth2Client } = require("../services/projects");
-const { almondFile } = require("./config");
+const { almondFile, crud } = require("./config");
 
 async function createProperty(model) {
   let propertyObj = {};
@@ -10,7 +10,7 @@ async function createProperty(model) {
   const { name } = await inquirer.prompt({
     type: "input",
     name: "name",
-    message: `What is the name of this property for the ${model.name} model (singular camelCase)?`,
+    message: `Name of property for "${model.name}" model (singular camelCase)?`,
   });
 
   propertyObj.name = name;
@@ -18,7 +18,7 @@ async function createProperty(model) {
   const { propType } = await inquirer.prompt({
     type: "list",
     name: "propType",
-    message: `What type of property is ${propertyObj.name}?`,
+    message: `What type of property is "${propertyObj.name}"?`,
     choices: ["string", "email", "integer", "boolean", "date"],
   });
 
@@ -27,7 +27,7 @@ async function createProperty(model) {
   const { unique } = await inquirer.prompt({
     type: "confirm",
     name: "unique",
-    message: `Will ${propertyObj.name} be unique?`,
+    message: `Will "${propertyObj.name}" be unique?`,
   });
 
   propertyObj.unique = unique;
@@ -35,32 +35,63 @@ async function createProperty(model) {
   const { nullable } = await inquirer.prompt({
     type: "confirm",
     name: "nullable",
-    message: `Can ${propertyObj.name} be null?`,
+    message: `Can "${propertyObj.name}" be null?`,
   });
 
   propertyObj.nullable = nullable;
   return propertyObj;
 }
 
-module.exports.createAuthModel = async function createAuthModel(projectUUID) {
+async function createAuthModel() {
   return {
+    "name": "user",
     "auth": true,
-    "provider": "Github"
+    "provider": "Github",
+    "associations": [],
+    "authorize": [],
+    "scope": {}
   }
 }
 
-module.exports.createModel = async function createModel() {
+module.exports.createAuthModel = createAuthModel;
+
+async function askIfAuthNeeded() {
+  const { createAuthModelNow } = await inquirer.prompt({
+    type: "confirm",
+    name: "createAuthModelNow",
+    message: "Do you need a way for users to sign in and register for your app?"
+  });
+  if(createAuthModelNow) {
+    return await createAuthModel();
+  } else {
+    return false;
+  }
+}
+
+module.exports.createModel = async function createModel(listOfModelsToCreate, recreate) {
   let modelObj = {};
-  clearConsole();
   const { model } = await inquirer.prompt({
     type: "input",
     name: "model",
     message:
-      "What is the name of the model you would like to create  (singular camelCase)?",
+      "Name of model? (singular camelCase)?",
   });
+  if(_.find(listOfModelsToCreate, {name: model})) {
+    // recursion!!
+    console.log(chalk.magenta(`You already have a ${model} model! Try again.`))
+    return await createModel(listOfModelsToCreate, true)
+  } else if(model === "user") {
+    // they haven't created a user model yet but they wrote "user"
+    const checkAuthNeeded = await askIfAuthNeeded();
+    if(checkAuthNeeded) {
+      return checkAuthNeeded;
+    }
+  }
   modelObj.name = model;
   modelObj.properties = [];
   modelObj.associations = [];
+  modelObj.authorize = [];
+  modelObj.scope = {};
 
   async function createModelProperty() {
     const property = await createProperty(modelObj);
@@ -70,17 +101,16 @@ module.exports.createModel = async function createModel() {
   const { createPropertiesNow } = await inquirer.prompt({
     type: "confirm",
     name: "createPropertiesNow",
-    message: `Do you want to add properties to the ${modelObj.name} model now?`,
+    message: `Add properties to the "${modelObj.name}" model?`,
   });
 
   if (createPropertiesNow) {
     async function doPropertyLoop() {
       const newProperty = await createModelProperty(modelObj);
-      clearConsole();
       const { anotherProperty } = await inquirer.prompt({
         type: "confirm",
         name: "anotherProperty",
-        message: `Do you want to add more properties to the ${modelObj.name} model?`,
+        message: `Add more properties to "${modelObj.name}" model?`,
       });
       if (anotherProperty) {
         await doPropertyLoop();
@@ -89,8 +119,44 @@ module.exports.createModel = async function createModel() {
     await doPropertyLoop();
   }
 
+  if(_.find(listOfModelsToCreate, {name: "user"})) {
+    const { authorizations } = await inquirer.prompt({
+      type: "checkbox",
+      name: "authorizations",
+      message: `Select authorized routes for "${modelObj.name}" model`,
+      choices: crud
+    });
+    modelObj.authorize = authorizations;
+  }
+
+  const scope = await createScope(listOfModelsToCreate, modelObj);
+  modelObj.scope = scope;
   return modelObj;
 };
+
+async function createScope(listOfModelsToCreate, currentModel) {
+  const scope = {};
+  const associations = currentModel.associations;
+  for await (element of crud) {
+    const { routeScope } = await inquirer.prompt({
+      type: "list",
+      name: "routeScope",
+      message: `Who should be able to see the "${currentModel.name}" model ${element} route?`,
+      choices: ["all", "user", "none"]
+    });
+    if(routeScope === "user" && !associations.length) {
+      if(!_.find(listOfModelsToCreate, {name: "user"})) {
+        const checkAuthNeeded = await askIfAuthNeeded();
+        if(checkAuthNeeded) {
+          return checkAuthNeeded;
+        }
+      }
+    }
+
+    scope[element] = routeScope;
+  }
+  return scope;
+}
 
 async function createAssociation(currentModel, modelsByName) {
   let associationObj = {};
@@ -156,11 +222,10 @@ module.exports.createAssociationsForModels = async function createAssociationsFo
       return;
     }
     await createModelAssociation(modelObj);
-    clearConsole();
     const { anotherAssociation } = await inquirer.prompt({
       type: "confirm",
       name: "anotherAssociation",
-      message: `Do you want to add more associations to the ${modelObj.name} model?`,
+      message: `Add more associations to ${modelObj.name} model?`,
     });
     if (anotherAssociation) {
       await doAssociationLoop();
@@ -170,7 +235,7 @@ module.exports.createAssociationsForModels = async function createAssociationsFo
       const { doNextAssociation } = await inquirer.prompt({
         type: "confirm",
         name: "doNextAssociation",
-        message: `Do you want to add more associations?`,
+        message: `Add more associations?`,
       });
       if (doNextAssociation) {
         await doAssociationLoop();
