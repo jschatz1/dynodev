@@ -21,6 +21,8 @@ class SchemaFileService
     sql = Array.new
     add_authorize_table(schema)
     add_scope_table(schema)
+    add_associations_table(schema)
+    add_selections_table(schema)
     @model["models"].each { |model|
       if model["properties"].nil?
         model["properties"] = Array.new
@@ -75,6 +77,8 @@ class SchemaFileService
       sql.push(create_table_sql)
       migrate_authorized_actions(schema, model)
       migrate_scoped_routes(schema, model)
+      migrate_associations(schema, model)
+      migrate_selections(schema, model)
     }
     execution = ActiveRecord::Base.connection.execute(sql.join("\n"))
   end
@@ -122,6 +126,7 @@ class SchemaFileService
       model["associations"] = model["associations"].map { |association|
         related = association["related"]
         association["pascal_singular"] = related.pluralize(1).camelize
+        association["underscore"] = related.camelize(:lower).pluralize(2).underscore
         case association["type"]
         when "belongsTo"
           model["properties"].push({
@@ -155,6 +160,73 @@ class SchemaFileService
   end
 
   private
+
+  def add_selections_table(schema)
+    create_select_sql = <<-CREATE_TABLE_SQL
+      DROP TABLE IF EXISTS "#{schema}"."selections";
+      CREATE TABLE "#{schema}"."selections"
+      (
+        id BIGSERIAL NOT NULL PRIMARY KEY,
+        model VARCHAR(256) NOT NULL,
+        selections VARCHAR(256) NOT NULL
+      )
+      WITH (
+        OIDS = FALSE
+      );
+      ALTER TABLE "#{schema}"."selections" OWNER to jacobschatz;
+      CREATE_TABLE_SQL
+    execution = ActiveRecord::Base.connection.execute(create_select_sql)
+  end
+
+  def migrate_selections(schema, model)
+    if model.key?("selectables")
+
+      values = "('#{model["underscore"]}', '#{model["selectables"].flatten.to_json}')"
+      insert_selection_sql = <<-INSERT_TABLE_SQL
+      INSERT INTO "#{schema}"."selections" (model, selections)
+      VALUES #{values};
+      INSERT_TABLE_SQL
+      execution = ActiveRecord::Base.connection.execute(insert_selection_sql)
+    end
+  end
+
+  def add_associations_table(schema)
+    create_associations_sql = <<-CREATE_TABLE_SQL
+      DROP TABLE IF EXISTS "#{schema}"."associations";
+      CREATE TABLE "#{schema}"."associations"
+      (
+        id BIGSERIAL NOT NULL PRIMARY KEY,
+        model VARCHAR(256) NOT NULL,
+        related VARCHAR(256) NOT NULL,
+        type VARCHAR(256) NOT NULL,
+        model_key VARCHAR(256) NOT NULL
+      )
+      WITH (
+        OIDS = FALSE
+      );
+      ALTER TABLE "#{schema}"."associations" OWNER to jacobschatz;
+      CREATE_TABLE_SQL
+    execution = ActiveRecord::Base.connection.execute(create_associations_sql)
+  end
+
+  def migrate_associations(schema, model)
+    if model.key?("associations")
+      add_associations = Array.new
+      model["associations"].each{ |association|
+        if association.has_key?("related") && association.has_key?("type")
+          # model, related, type
+          add_associations.push("('#{model["underscore"]}', '#{association["underscore"]}', '#{association["type"]}', '#{model["underscore_singular"]}_id')")
+        end
+      }
+      if add_associations.count > 0
+        insert_association_sql = <<-INSERT_TABLE_SQL
+        INSERT INTO "#{schema}"."associations" (model, related, type, model_key)
+        VALUES #{add_associations.join(",")};
+        INSERT_TABLE_SQL
+        execution = ActiveRecord::Base.connection.execute(insert_association_sql)
+      end
+    end
+  end
 
   def add_scope_table(schema)
     create_scope_sql = <<-CREATE_TABLE_SQL
@@ -310,8 +382,9 @@ class SchemaFileService
         }
       ],
       "associations"=> user_model.nil? ? [] : user_model["associations"],
-      "authorize": user_model.nil? ? [] : user_model["authorize"],
-      "scope": user_model.nil? ? [] : user_model["scope"]
+      "authorize" => user_model.nil? ? [] : user_model["authorize"],
+      "scope" => user_model.nil? ? [] : user_model["scope"],
+      "selectables" => ["id", "username", "email", "profile_pic", "family_name", "given_name", "created_at", "updated_at"]
     },
     {
       "name"=>"oauth_tokens",
