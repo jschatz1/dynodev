@@ -49,7 +49,8 @@ async function createAuthModel() {
     "provider": "Github",
     "associations": [],
     "authorize": [],
-    "scope": {}
+    "scope": {},
+    "selectables": []
   }
 }
 
@@ -90,6 +91,7 @@ module.exports.createModel = async function createModel(listOfModelsToCreate, re
   modelObj.name = model;
   modelObj.properties = [];
   modelObj.associations = [];
+  modelObj.selectables = ["*"];
   modelObj.authorize = [];
   modelObj.scope = {};
 

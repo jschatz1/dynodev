@@ -26,7 +26,7 @@ function shouldAuthorize(verb) {
       WHERE "model" = '${req.params.model}' AND "action" = '${verb}' LIMIT 1;`
     )
     .then(function(result) {
-      if(result.length){
+      if(result[0].length){
         console.log('result', req.originalUrl)
         ensureAuthenticated(req, res, next);
       } else {
@@ -159,7 +159,6 @@ routes.get("/:username/:project/auth/github",
   }, 
   intakeController.authGitHub);
 routes.get("/:username/:project/hello", function(req, res, next) {
-  console.log("HELLO", req.params)
   next();
 }, getClientForSchema, unuseGitHub, useGitHub, shouldAuthorize("read"), intakeController.hello);
 routes.get("/:username/:project/:model",canQuery, getClientForSchema, unuseGitHub, useGitHub, shouldAuthorize("index"), intakeController.index);
