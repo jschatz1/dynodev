@@ -2,6 +2,7 @@ const { QueryTypes } = require("sequelize");
 const models = require("../../models");
 const { getSchema, getTable, getAssociationsTable, getColumn } = require("./intake.utils");
 const _ = require("lodash");
+const { Builder, Response } = require("../../sql/builder");
 
 module.exports.create = async function create(req, res, next) {
   const reqBody = req.body;
@@ -97,7 +98,24 @@ module.exports.index = async function index(req, res, next) {
   let hasAssociations = false;
   let selectables_model;
   let selectables_association = `["*"]`;
+  let hasUserScope = false
   // find the associations. e.g. hasMany etc.
+  const builder = new Builder(req.params);
+  const response = new Response(res);
+  const scope = await builder.getScope();
+  if(scope.length && scope[0].scope === 'none') {
+    return response.notFound();
+  }
+
+  if(scope.length && scope[0].scope === 'user') {
+    hasUserScope = true;
+  }
+
+  if(hasUserScope && !req.user) {
+    return response.unauthorized();
+  }
+
+
   try {
     associations = await models.sequelize
       .query(`SELECT * FROM ${getAssociationsTable(req.params)} WHERE "related" = '${model}' LIMIT 1`,
@@ -180,16 +198,33 @@ module.exports.index = async function index(req, res, next) {
     const joinTable = getTable({username, project, model: association.model});
     try{
       results = await models.sequelize
-       .query(`SELECT ${selection.join(",")} FROM ${table} AS a JOIN ${joinTable} AS b ON a.${association.model_key} = b.id;`, { type: QueryTypes.SELECT })
-      console.log("results", results)
+       .query(`SELECT ${selection.join(",")}
+          FROM ${table}
+          AS a JOIN ${joinTable}
+          AS b ON a.${association.model_key} = b.id
+          ${hasUserScope
+            ? `WHERE ${getColumn({alias:'a', column:'user_id'})} = ${req.user.id}`
+            : ''};`,
+            {
+              type: QueryTypes.SELECT
+            }
+        );
       return res.json({results})
     } catch(e) {
+      console.log(e)
       return res.status(422).json({detail: e.parent.detail})
     }
   } else {
     try {
       results = await models.sequelize
-        .query(`SELECT ${selection.join(",")} FROM ${getTable(req.params)};`, { type: QueryTypes.SELECT });
+        .query(`SELECT ${selection.join(",")}
+          FROM ${getTable(req.params)}
+          ${hasUserScope
+            ? `WHERE ${getColumn({...req.params, column:'user_id'})} = ${req.user.id}`
+            : ''};`,
+            {
+              type: QueryTypes.SELECT
+            });
       return res.json({results})
     } catch(e) {
       console.log(e)
