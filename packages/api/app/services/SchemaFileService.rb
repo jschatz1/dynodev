@@ -71,7 +71,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."#{model["underscore"]}" OWNER to jacobschatz;
+      ALTER TABLE "#{schema}"."#{model["underscore"]}" OWNER to postgres;
       CREATE_TABLE_SQL
 
       sql.push(create_table_sql)
@@ -173,7 +173,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."selections" OWNER to jacobschatz;
+      ALTER TABLE "#{schema}"."selections" OWNER to postgres;
       CREATE_TABLE_SQL
     execution = ActiveRecord::Base.connection.execute(create_select_sql)
   end
@@ -204,7 +204,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."associations" OWNER to jacobschatz;
+      ALTER TABLE "#{schema}"."associations" OWNER to postgres;
       CREATE_TABLE_SQL
     execution = ActiveRecord::Base.connection.execute(create_associations_sql)
   end
@@ -241,7 +241,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."scoped_routes" OWNER to jacobschatz;
+      ALTER TABLE "#{schema}"."scoped_routes" OWNER to postgres;
       CREATE_TABLE_SQL
     execution = ActiveRecord::Base.connection.execute(create_scope_sql)
   end
@@ -279,7 +279,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."authorized_routes" OWNER to jacobschatz;
+      ALTER TABLE "#{schema}"."authorized_routes" OWNER to postgres;
       CREATE_TABLE_SQL
     execution = ActiveRecord::Base.connection.execute(create_table_sql)
   end

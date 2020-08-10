@@ -1,0 +1,37 @@
+version: "3.4"
+
+services:
+  api:
+    build:
+      context: ./packages/api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./packages/api:/api
+    env_file: ./packages/api/.env
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+  endpoints:
+    build:
+      context: ./packages/endpoint-server/api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./packages/endpoint-server/api:/endpoint
+    env_file: ./packages/endpoint-server/api/.env
+    ports:
+      - 3001:3001
+    depends_on:
+      - api
+  db:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "docker"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  db-data:
