@@ -112,7 +112,7 @@ module.exports.index = async function index(req, res, next) {
   }
 
   if(hasUserScope && !req.user) {
-    return response.unauthorized();
+    return response.unauthorized(res);
   }
 
 

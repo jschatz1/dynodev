@@ -43,11 +43,11 @@ class Response {
     this.res = res;
   }
 
-  notFound() {
+  notFound(res) {
     return res.status(404).json({msg: "Not found"});
   }
 
-  unauthorized() {
+  unauthorized(res) {
     return res.status(401).json({msg: "Unauthorized"});
   }
 }

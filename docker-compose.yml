@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: ./packages/api
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     volumes:
       - ./packages/api:/api
     env_file: ./packages/api/.env
