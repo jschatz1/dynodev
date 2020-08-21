@@ -76,7 +76,7 @@ module.exports.loginUser = async function loginUser() {
     const {data} = await postAuth();
     urls = data;
   } catch(e) {
-    console.log("Unable to log in at this time!");
+    console.log("Unable to log in at this time!", e);
     return;
   }
   await openBrowser(`${baseURL}${urls.browser_url}`);

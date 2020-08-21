@@ -1,6 +1,6 @@
 const { QueryTypes } = require("sequelize");
 const models = require("../../models");
-const { getSchema, getTable, getAssociationsTable, getColumn } = require("./intake.utils");
+const { getSchema, getTable, getAssociationsTable, getColumn, logToSlack } = require("./intake.utils");
 const _ = require("lodash");
 const { Builder, Response } = require("../../sql/builder");
 
@@ -17,7 +17,7 @@ module.exports.create = async function create(req, res, next) {
       });
     return res.json({result});
   } catch (e) {
-    console.log(e)
+    logToSlack(e);
     return res.status(422).json({ detail: e.parent.detail, sql: e.parent.sql });
   }
 };

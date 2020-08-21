@@ -1,4 +1,5 @@
 const models = require("../../models");
+const axios = require("axios");
 const { QueryTypes } = require("sequelize");
 
 function getSchema({username, project}) {
@@ -15,6 +16,16 @@ module.exports.getAssociationsTable = function getAssociationsTable({username, p
 
 function getTable({username, project, model}) {
   return `"${getSchema({username, project})}"."${model}"`;
+}
+
+module.exports.logToSlack = function logToSlack(text) {
+  axios.post(process.env.SLACK_ERROR_HOOK, {
+    text
+  }).then(function(data){
+    console.log("logged to slack");
+  }).catch(function(e) {
+    console.log("cannot log to slack", e);
+  });
 }
 
 module.exports.getColumn = function getColumn({alias, username, project, model, column}) {

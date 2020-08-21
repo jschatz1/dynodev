@@ -5,7 +5,7 @@ const routes = new Router();
 const passport = require("passport");
 const { QueryTypes } = require("sequelize");
 const models = require("../../models");
-const { getSchema, getClientsTable, toBase64String, fromBase64String } = require("./intake.utils");
+const { getSchema, getClientsTable, toBase64String, fromBase64String, logToSlack } = require("./intake.utils");
 
 // POST /api/v1/cars
 // GET /api/v1/cars/:id
@@ -34,12 +34,14 @@ function shouldAuthorize(verb) {
       }
     })
     .catch((e) => {
+      logToSlack(e);
       return res.status(404).json({msg: "Not found"})
     });
   }
 }
 
 function canQuery(req, res, next) {
+  console.log("can query")
   const {model} = req.params;
   models.sequelize.query(
     `SELECT EXISTS(
@@ -48,15 +50,17 @@ function canQuery(req, res, next) {
   )
   .then(function(result) {
     if(!result[0][0].exists) {
+      logToSlack(result[0][0]);
       return res.status(404).json({msg: "Not found"});
     }
     if(doNotQuery.includes(model)) {
+      logToSlack("no not query", model);
       return res.status(404).json({msg: "Not found"});
     }
     next();
   })
   .catch(function(err) {
-    console.log(err);
+    logToSlack(err)
     return res.status(500).json(err);
   });
 }
@@ -71,6 +75,7 @@ function getClientForSchema(req, res, next) {
     next();
   })
   .catch((e) => {
+    logToSlack(e);
     return res.status(404).json({msg: "Not found"})
   });
 }
@@ -80,7 +85,7 @@ function useGitHub(req, res, next) {
       new GitHubStrategy({
         clientID: res.locals.client.client_id,
         clientSecret: res.locals.client.client_secret,
-        callbackURL: `http://localhost:3001/api/v1/${req.params.username}/${req.params.project}/auth/github/callback`
+        callbackURL: `https://api.dyno.dev/api/v1/${req.params.username}/${req.params.project}/auth/github/callback`
       },
       function(accessToken, refreshToken, profile, done) {
         // asynchronous verification, for effect...
@@ -123,6 +128,7 @@ function useGitHub(req, res, next) {
           }
         })
         .catch((e) => {
+          logToSlack(e);
           return res.status(404).json({msg: "Not found"})
         });
       })
