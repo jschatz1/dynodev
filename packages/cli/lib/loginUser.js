@@ -76,7 +76,8 @@ module.exports.loginUser = async function loginUser() {
     const {data} = await postAuth();
     urls = data;
   } catch(e) {
-    console.log("Could not get auth data");
+    console.log("Unable to log in at this time!");
+    return;
   }
   await openBrowser(`${baseURL}${urls.browser_url}`);
   console.log(chalk.gray("Validating token"));

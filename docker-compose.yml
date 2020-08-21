@@ -15,7 +15,7 @@ services:
   endpoints:
     build:
       context: ./packages/endpoint-server/api
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     volumes:
       - ./packages/endpoint-server/api:/endpoint
     env_file: ./packages/endpoint-server/api/.env
@@ -32,6 +32,12 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+  redis:
+    image: redis:6.0.6-alpine
+    ports:
+      - 6379:6379
+    depends_on:
+      - endpoints
 
 volumes:
   db-data:

@@ -12,13 +12,12 @@ RUN gem install bundler:2.1.2
 COPY Gemfile /api/Gemfile
 COPY Gemfile.lock /api/Gemfile.lock
 RUN bundle install
-COPY . /api
-# make sure the packs don't get pushed over
-RUN rm -rf /api/public/packs
-
 RUN yarn --check-files
 RUN rake webpacker:compile
 RUN rake assets:precompile
+COPY . /api
+# make sure the packs don't get pushed over
+RUN rm -rf /api/public/packs
 
 # Add a script to be executed every time the container starts.
 COPY entrypoint.sh /usr/bin/
