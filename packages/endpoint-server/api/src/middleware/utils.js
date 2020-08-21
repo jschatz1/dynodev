@@ -11,11 +11,17 @@ function getRedisClient() {
 
 module.exports.getStore = function getStoreForEnv(session) {
   let store;
-  const redisClient = getRedisClient();
-  redisClient.on("error", function (err) {
-    console.log("redis error: ", err);
+  // const redisClient = getRedisClient();
+  // redisClient.on("error", function (err) {
+  //   console.log("redis error: ", err);
+  // });
+  // const RedisStore = require("connect-redis")(session);
+  // store = new RedisStore({ client: redisClient });
+
+  const MemoryStore = require('memorystore')(session);
+
+  return new MemoryStore({
+    checkPeriod: 86400000,
+    secret: 2460123423948282492898324238498
   });
-  const RedisStore = require("connect-redis")(session);
-  store = new RedisStore({ client: redisClient });
-  return store;
 };
