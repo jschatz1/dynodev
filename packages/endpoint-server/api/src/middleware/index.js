@@ -1,7 +1,9 @@
 const morgan = require("morgan");
+const helmet = require("helmet");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const compression = require("compression");
+const { getStore } = require("./utils");
 const { getSchema, getClientsTable } = require("../modules/intake/intake.utils");
 const models = require("../models");
 const { QueryTypes } = require("sequelize");
@@ -45,10 +47,20 @@ module.exports = (app) => {
     app.set("trust proxy", 1);
   }
   app.use(cookieParser());
+  app.set("trust proxy", isProd ? 1 : 0);
   app.use(session({
     secret: process.env["SESSION_SECRET"],
-    saveUninitialized: true,
+    store: getStore(session),
+    saveUninitialized: false,
+    name: "dynodev-session",
     resave: false,
+    cookie: {
+      // session expires after 1m
+      maxAge: 2629800000,
+      sameSite: isProd ? "none" : null,
+      secure: isProd,
+      httpOnly: true,
+    },
   }));
   app.use(passport.initialize());
   app.use('/api/v1/:username/:project/*',passport.session());

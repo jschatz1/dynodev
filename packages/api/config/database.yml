@@ -65,5 +65,3 @@ test:
 production:
   <<: *default
   database: almond_prod
-  username: api
-  password: <%= ENV['API_DATABASE_PASSWORD'] %>

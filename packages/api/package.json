@@ -10,11 +10,11 @@
     "turbolinks": "^5.2.0",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "bulma": "^0.8.2"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "bulma": "^0.8.2",
     "webpack-dev-server": "^3.11.0"
   }
 }

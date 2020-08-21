@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "NODE_ENV=development nodemon ./src/index.js",
+    "dev": "nodemon ./src/index.js",
     "db:reset": "yarn sequelize-cli db:migrate:undo:all && yarn sequelize-cli db:migrate && yarn sequelize-cli db:seed:all --debug",
     "db:drop": "yarn sequelize-cli db:migrate:undo:all",
     "db:migrate": "yarn sequelize-cli db:migrate"
@@ -24,7 +24,9 @@
     "passport": "^0.4.1",
     "passport-github2": "^0.1.12",
     "pg": "^7.12.1",
-    "sequelize": "^5.19.0"
+    "sequelize": "^5.19.0",
+    "connect-redis": "^5.0.0",
+    "redis": "^3.0.2"
   },
   "devDependencies": {
     "nodemon": "^1.19.2",
