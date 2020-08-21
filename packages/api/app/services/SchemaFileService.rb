@@ -71,7 +71,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."#{model["underscore"]}" OWNER to postgres;
+      ALTER TABLE "#{schema}"."#{model["underscore"]}" OWNER to #{ENV["DATABASE_USER"]};
       CREATE_TABLE_SQL
 
       sql.push(create_table_sql)
@@ -173,7 +173,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."selections" OWNER to postgres;
+      ALTER TABLE "#{schema}"."selections" OWNER to #{ENV["DATABASE_USER"]};
       CREATE_TABLE_SQL
     execution = ActiveRecord::Base.connection.execute(create_select_sql)
   end
@@ -204,7 +204,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."associations" OWNER to postgres;
+      ALTER TABLE "#{schema}"."associations" OWNER to #{ENV["DATABASE_USER"]};
       CREATE_TABLE_SQL
     execution = ActiveRecord::Base.connection.execute(create_associations_sql)
   end
@@ -241,7 +241,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."scoped_routes" OWNER to postgres;
+      ALTER TABLE "#{schema}"."scoped_routes" OWNER to #{ENV["DATABASE_USER"]};
       CREATE_TABLE_SQL
     execution = ActiveRecord::Base.connection.execute(create_scope_sql)
   end
@@ -279,7 +279,7 @@ class SchemaFileService
       WITH (
         OIDS = FALSE
       );
-      ALTER TABLE "#{schema}"."authorized_routes" OWNER to postgres;
+      ALTER TABLE "#{schema}"."authorized_routes" OWNER to #{ENV["DATABASE_USER"]};
       CREATE_TABLE_SQL
     execution = ActiveRecord::Base.connection.execute(create_table_sql)
   end
