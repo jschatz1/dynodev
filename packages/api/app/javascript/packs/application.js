@@ -20,7 +20,6 @@ const imagePath = (name) => images(name, true)
 document.addEventListener('DOMContentLoaded', () => {
   const app = new Vue({
     render: h => h(App),
-    resources
   }).$mount()
   document.getElementById("projects-app").appendChild(app.$el);
 })
