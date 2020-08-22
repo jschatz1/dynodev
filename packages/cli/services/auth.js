@@ -4,7 +4,7 @@ let config = {};
 axios.defaults.baseURL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
-    : "https://api.dyno.dev";
+    : "https://dyno.dev";
 
 module.exports.baseURL = axios.defaults.baseURL;
 
