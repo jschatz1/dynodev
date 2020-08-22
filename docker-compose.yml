@@ -5,8 +5,6 @@ services:
     build:
       context: ./packages/api
       dockerfile: Dockerfile
-    volumes:
-      - ./packages/api:/api
     env_file: ./packages/api/.env
     ports:
       - 3000:3000
@@ -16,8 +14,6 @@ services:
     build:
       context: ./packages/endpoint-server/api
       dockerfile: Dockerfile
-    volumes:
-      - ./packages/endpoint-server/api:/endpoint
     env_file: ./packages/endpoint-server/api/.env
     ports:
       - 3001:3001

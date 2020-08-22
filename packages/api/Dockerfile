@@ -7,21 +7,21 @@ RUN apt-get install -y \
     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g yarn
-ENV API_HOME /api
+ENV API_HOME /api/
 RUN mkdir $API_HOME
-WORKDIR API_HOME
+WORKDIR $API_HOME
 RUN gem install bundler:2.1.2
 COPY Gemfile* $API_HOME
+RUN pwd && ls -la
 RUN bundle install
 
 COPY . $API_HOME
 RUN yarn install --check-files
+RUN RAILS_ENV=production bundle exec rake assets:precompile
 
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
-
 # Start the main process.
 CMD ["rails", "server", "-b", "0.0.0.0"]
-RUN RAILS_ENV=production bundle exec rake assets:precompile

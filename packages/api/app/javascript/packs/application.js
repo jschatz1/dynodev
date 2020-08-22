@@ -2,10 +2,10 @@
 // present in this directory. You're encouraged to place your actual application logic in
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+import Vue from 'vue';
+import App from '../app.vue';
+import '../scss/dyno.scss';
 
-require('../src/application.scss');
 require("@rails/ujs").start()
 require("@rails/activestorage").start()
 require("channels")
@@ -16,3 +16,12 @@ require("channels")
 //
 const images = require.context('../images', true)
 const imagePath = (name) => images(name, true)
+
+document.addEventListener('DOMContentLoaded', () => {
+  const app = new Vue({
+    render: h => h(App),
+    resources
+  }).$mount()
+  document.getElementById("projects-app").appendChild(app.$el);
+})
+
