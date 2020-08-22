@@ -12,7 +12,6 @@ RUN mkdir $API_HOME
 WORKDIR $API_HOME
 RUN gem install bundler:2.1.2
 COPY Gemfile* $API_HOME
-RUN pwd && ls -la
 RUN bundle install
 
 COPY . $API_HOME
