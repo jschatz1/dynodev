@@ -3,6 +3,7 @@ const axios = require("axios");
 const { QueryTypes } = require("sequelize");
 
 function getSchema({username, project}) {
+  console.log("getSchema", username, project)
   return `${username}_${project}`;
 }
 
@@ -11,7 +12,11 @@ module.exports.getClientsTable = function getClientsTable({username, project}) {
 }
 
 module.exports.getAssociationsTable = function getAssociationsTable({username, project}) {
-  return `"${getSchema({username, project})}"."associations"`;
+  const user = {
+    username,
+    project
+  };
+  return `"${getSchema(user)}"."associations"`;
 }
 
 function getTable({username, project, model}) {

@@ -5,7 +5,7 @@ const routes = new Router();
 const passport = require("passport");
 const { QueryTypes } = require("sequelize");
 const models = require("../../models");
-const { getSchema, getClientsTable, toBase64String, fromBase64String, logToSlack } = require("./intake.utils");
+const { getSchema, getClientsTable, toBase64String, fromBase64String } = require("./intake.utils");
 
 // POST /api/v1/cars
 // GET /api/v1/cars/:id
@@ -21,27 +21,28 @@ function ensureAuthenticated(req, res, next) {
 
 function shouldAuthorize(verb) {
   return (req, res, next) => {
+    if(req.dyno && !req.dyno.authorize) {
+      next();
+      return;
+    }
     models.sequelize.query(
       `SELECT * FROM ${getSchema(req.params)}."authorized_routes"
       WHERE "model" = '${req.params.model}' AND "action" = '${verb}' LIMIT 1;`
     )
     .then(function(result) {
       if(result[0].length){
-        console.log('result', req.originalUrl)
         ensureAuthenticated(req, res, next);
       } else {
         next();
       }
     })
     .catch((e) => {
-      logToSlack(e);
       return res.status(404).json({msg: "Not found"})
     });
   }
 }
 
 function canQuery(req, res, next) {
-  console.log("can query")
   const {model} = req.params;
   models.sequelize.query(
     `SELECT EXISTS(
@@ -50,22 +51,67 @@ function canQuery(req, res, next) {
   )
   .then(function(result) {
     if(!result[0][0].exists) {
-      logToSlack(result[0][0]);
       return res.status(404).json({msg: "Not found"});
     }
     if(doNotQuery.includes(model)) {
-      logToSlack("no not query", model);
       return res.status(404).json({msg: "Not found"});
     }
-    next();
+
+    models.sequelize.query(
+      `SELECT * FROM "${getSchema(req.params)}"."authorized_routes" LIMIT 1;`,{
+        type: QueryTypes.SELECT
+      }
+    )
+    .then(function(authorizedRouteResult) {
+      if(authorizedRouteResult.length === 0) {
+        models.sequelize.query(`SELECT EXISTS (
+          SELECT FROM pg_tables
+          WHERE  schemaname = '${getSchema(req.params)}'
+          AND    tablename  = 'oauth_clients'
+        );`, {
+          type: QueryTypes.SELECT,
+        })
+        .then(function(existsResult) {
+          if(!existsResult[0].exists) {
+            // the user doesn't want to use oauth stuff
+            req.dyno = {
+              authorize: false
+            };
+            next();
+            return;
+          }
+          models.sequelize.query(
+            `SELECT * FROM "${getSchema(req.params)}"."oauth_clients" LIMIT 1;`, {
+              type: QueryTypes.SELECT
+            }
+          )
+          .then(function(oauthClientsResult) {
+            if(oauthClientsResult.length === 0) {
+              // the user doesn't want to use oauth stuff
+              req.dyno = {
+                authorize: false
+              };
+              next();
+            } else {
+              next();
+            }
+          });
+        });
+      } else {
+        next();
+      }
+    });
   })
   .catch(function(err) {
-    logToSlack(err)
     return res.status(500).json(err);
   });
 }
 
 function getClientForSchema(req, res, next) {
+  if(req.dyno && !req.dyno.authorize) {
+    next();
+    return;
+  }
   models.sequelize.query(
     `SELECT "client_id", "client_secret" FROM
     ${getClientsTable(req.params)} LIMIT 1;`
@@ -75,12 +121,15 @@ function getClientForSchema(req, res, next) {
     next();
   })
   .catch((e) => {
-    logToSlack(e);
     return res.status(404).json({msg: "Not found"})
   });
 }
 
 function useGitHub(req, res, next) {
+  if(req.dyno && !req.dyno.authorize) {
+    next();
+    return;
+  }
   passport.use(
       new GitHubStrategy({
         clientID: res.locals.client.client_id,
@@ -128,7 +177,6 @@ function useGitHub(req, res, next) {
           }
         })
         .catch((e) => {
-          logToSlack(e);
           return res.status(404).json({msg: "Not found"})
         });
       })

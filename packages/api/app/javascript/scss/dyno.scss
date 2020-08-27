@@ -8,10 +8,10 @@
   font-size: 2.5rem;
 }
 
-html, body {
-  height: 100%;
+html > body.projects {
+  background-color: $blue-300;
 }
 
-body.projects {
-  background-color: $blue-300;
+body {
+  height: 100%;
 }

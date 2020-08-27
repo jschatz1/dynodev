@@ -111,7 +111,6 @@ class SchemaFileService
       @model["models"].delete_at(has_auth_index)
       @model["models"] = auth_hashes(user_model) + @model["models"]
     end
-
     @model["models"] = @model["models"].map { |model|
       name = model["name"]
       model["pascal"] = name.pluralize(2).camelize
@@ -123,6 +122,9 @@ class SchemaFileService
       model["underscore_singular"] = name.camelize(:lower).pluralize(1).underscore
       model["dash_singular"] = name.camelize(:lower).pluralize(1).underscore.dasherize
 
+      if not model.has_key? "associations"
+        model["associations"] = [];
+      end
       model["associations"] = model["associations"].map { |association|
         related = association["related"]
         association["pascal_singular"] = related.pluralize(1).camelize
@@ -179,15 +181,16 @@ class SchemaFileService
   end
 
   def migrate_selections(schema, model)
-    if model.key?("selectables")
-
-      values = "('#{model["underscore"]}', '#{model["selectables"].flatten.to_json}')"
-      insert_selection_sql = <<-INSERT_TABLE_SQL
-      INSERT INTO "#{schema}"."selections" (model, selections)
-      VALUES #{values};
-      INSERT_TABLE_SQL
-      execution = ActiveRecord::Base.connection.execute(insert_selection_sql)
+    if not model.key?("selectables")
+      model["selectables"] = ["*"]
     end
+
+    values = "('#{model["underscore"]}', '#{model["selectables"].flatten.to_json}')"
+    insert_selection_sql = <<-INSERT_TABLE_SQL
+    INSERT INTO "#{schema}"."selections" (model, selections)
+    VALUES #{values};
+    INSERT_TABLE_SQL
+    execution = ActiveRecord::Base.connection.execute(insert_selection_sql)
   end
 
   def add_associations_table(schema)

@@ -6,7 +6,7 @@ const {
 } = require("@vue/cli-shared-utils");
 const fs = require("fs");
 const inquirer = require("inquirer");
-const { almondFile, callbackURL } = require("./config");
+const { almondFile } = require("./config");
 const { validateFile } = require("./validator");
 const { createSchema, doesSchemaExist, createOauth2Client } = require("../services/projects");
 const _ = require("lodash");
@@ -27,6 +27,7 @@ async function push(options) {
   }
   const file = fs.readFileSync(almondFile, "utf8");
   const jsonFileContents = JSON.parse(file);
+  let doesSchemaExistsResult = null;
   try {
     const createdSchema = await createSchema(jsonFileContents.project, {
       contents: JSON.stringify(jsonFileContents),
@@ -56,7 +57,7 @@ async function push(options) {
   if(_.find(jsonFileContents["models"], {"auth": true})) {
       let exists = false;
       try {
-        const doesSchemaExistsResult = await doesSchemaExist(validationResult.project.project);
+        doesSchemaExistsResult = await doesSchemaExist(validationResult.project.project);
         exists = doesSchemaExistsResult.data.exists;
       } catch(e) {}
 
@@ -65,7 +66,7 @@ async function push(options) {
       }
 
       console.log(chalk.white("Your app uses authentication! Let's set that up for you!"))
-
+      const callbackURL = doesSchemaExistsResult.data.callback_url;
       const { step1 } = await inquirer.prompt({
         type: "confirm",
         name: "step1",
@@ -73,7 +74,8 @@ async function push(options) {
 \t* Go to https://github.com/settings/apps/ and click a "New GitHub App".
 \t* Fill in "GitHub App name" and "Homepage URL"
 \t* Uncheck "Active" for the "Webhook URL"
-\t* Set "User authorization callback URL" to: ${chalk.magenta(callbackURL)}
+\t* Set "User authorization callback URL" to:
+\t\t ${chalk.magenta(callbackURL)}
 \t* Click "Create GitHub App"
 \t* When ready type Y`,
       });

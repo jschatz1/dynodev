@@ -7,9 +7,10 @@ class Api::V1::SchemasController < ApplicationController
   # GET /schemas
   # GET /schemas.json
   def index
-    @schemas = Project
-      .includes(:schemas)
-      .find_by(uuid: params[:project_id])
+    @project = Project.find_by(uuid: params[:project_id])
+    @schema = Schema.order(created_at: :desc).find_by(project_id: @project.id)
+    pp @schema
+    render json: @schema
     # @schemas = Schema.all
   end
 
@@ -43,11 +44,11 @@ class Api::V1::SchemasController < ApplicationController
     begin
       schemaFileService.validateProject
       attributes[:contents] = schemaFileService.addNameHelpers
+      attributes[:original] = contents
       schemaFileService.migrate("#{@current_user.name}_#{@project.name}")
       @schema = Schema.new(attributes)
       @schema.project_id = @project.id
     rescue Exception => e
-      pp e
       return render json: {error: e.to_s}  , status: :unprocessable_entity
     end
 

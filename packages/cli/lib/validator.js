@@ -4,7 +4,7 @@ const { chalk } = require("@vue/cli-shared-utils");
 
 module.exports.validateFile = async function validateFile() {
   if (!fs.existsSync(almondFile)) {
-    return { result: false, reason: `Missing ${almondFile}` };
+    return { result: false, reason: `Missing ${almondFile}`, reasonCode: 404 };
   }
 
   const file = fs.readFileSync(almondFile, "utf8");

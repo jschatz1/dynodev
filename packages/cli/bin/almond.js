@@ -101,6 +101,15 @@ program
     require("../lib/push")(options);
   });
 
+program
+  .command("pull")
+  .description(`Pull down your latest ${almondFile}, replacing your existing file.`)
+  .action((cmd) => {
+    const options = cleanArgs(cmd);
+
+    require("../lib/pull")(options);
+  });
+
 function makeAddCommand() {
   const add = new commander.Command("add");
   add.description("add a model or add a property to a model");

@@ -1,6 +1,6 @@
 class Api::V1::ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
   before_action :authorize_cli, only: [:create, :show, :index]
+  before_action :set_project, only: [:show, :edit, :update, :destroy]
   after_action :create_project_schema, only: [:create]
   # GET /projects
   # GET /projects.json
@@ -11,6 +11,7 @@ class Api::V1::ProjectsController < ApplicationController
   # GET /projects/1
   # GET /projects/1.json
   def show
+    render json: @project
   end
 
   # GET /projects/new
@@ -33,7 +34,6 @@ class Api::V1::ProjectsController < ApplicationController
     end
 
     @current_user.projects << @project
-
   end
 
   # PATCH/PUT /projects/1

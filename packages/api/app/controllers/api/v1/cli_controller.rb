@@ -84,7 +84,9 @@ class Api::V1::CliController < ApplicationController
       execution = ActiveRecord::Base.connection.execute(check_if_client_id_exists_sql);
       exists = execution.values[0][0]
     end
-    json_response({exists: exists})
+    callback_root = ENV["RAILS_ENV"] === "production" ? "https://dyno.dev" : "http://localhost:3001"
+    callbackURL = "#{callback_root}/api/v1/#{@current_user.name}/#{@project.name}/auth/github/callback"
+    json_response({exists: exists, callback_url: callbackURL})
   end
 
   def get_routes
@@ -95,7 +97,7 @@ class Api::V1::CliController < ApplicationController
     WHERE table_schema = '#{schema_name}'
     LISTOFTABLES
     execution = ActiveRecord::Base.connection.execute(list_of_tables)
-    tables_filtered = execution.values.flatten - ['users', 'oauth_tokens', 'oauth_clients']
+    tables_filtered = execution.values.flatten - ['users', 'oauth_tokens', 'oauth_clients', 'authorized_routes', 'scoped_routes', 'associations', 'selections']
     tables_with_hashes = tables_filtered.map { |table|
       list_of_columns = <<-LISTOFCOLUMNS
       SELECT column_name,data_type 
