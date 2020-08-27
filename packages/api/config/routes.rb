@@ -14,7 +14,8 @@ Rails.application.routes.draw do
       get 'users/user', action: :show, controller: 'users'
     end
   end
-  resources :projects
+  get '/projects', action: :index, controller: 'projects'
+  get '/projects/*path', action: :index, controller: 'projects'
   get '/' => 'welcome#index', as: 'home'
   get 'auth/:provider/callback', to: 'sessions#create'
   get 'signout', to: 'sessions#destroy', as: 'signout'

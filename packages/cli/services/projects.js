@@ -25,6 +25,10 @@ module.exports.getProjectRoutes = async function getProjectRoutes(projectUUID) {
   return axios.get(`/api/v1/cli/${projectUUID}/routes`);
 }
 
+module.exports.getProjectLatestSchema = async function getProjectLatestSchema(projectUUID) {
+  return axios.get(`/api/v1/cli/${projectUUID}/schema/latest`);
+}
+
 module.exports.getProjects = async function getProjects() {
   return common.get("/api/v1/projects");
 };

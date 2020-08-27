@@ -19,7 +19,7 @@ module.exports = (...args) => {
   return init(...args).catch((err) => {
     stopSpinner(false); // do not persist
     error(err);
-    if (!process.env.ALMON_CLI_TEST) {
+    if (!process.env.ALMOND_CLI_TEST) {
       process.exit(1);
     }
   });

@@ -13,11 +13,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_format
-    puts request.path
     if request.path.include? @@api
       request.format = "json"
-    else
-      request.format = "html"
     end
   end
 
@@ -57,10 +54,15 @@ private
   def authorize_cli
     begin
       user_id = current_user_cli[:user_id]
+      puts "authorize_cli"
       @current_user ||= User.find(user_id)
     rescue
-      @current_user = nil
-      raise ApplicationController::Unauthenticated.new("Unable to authenticate user")
+      begin
+        @current_user ||= User.find(session[:user_id]) if session[:user_id]
+      rescue
+        @current_user = nil
+        raise ApplicationController::Unauthenticated.new("Unable to authenticate user")
+      end
     end
   end
 

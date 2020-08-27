@@ -7,14 +7,14 @@ RUN apt-get install -y \
     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g yarn
-ENV API_HOME /api/
-RUN mkdir $API_HOME
-WORKDIR $API_HOME
+ENV RAILS_ROOT /api/
+RUN mkdir $RAILS_ROOT
+WORKDIR $RAILS_ROOT
 RUN gem install bundler:2.1.2
-COPY Gemfile* $API_HOME
+COPY Gemfile* $RAILS_ROOT
 RUN bundle install
 
-COPY . $API_HOME
+COPY . $RAILS_ROOT
 RUN yarn install --check-files
 RUN RAILS_ENV=production bundle exec rake assets:precompile
 

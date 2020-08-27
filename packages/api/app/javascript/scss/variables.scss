@@ -13,6 +13,9 @@ $white: #FFF;
 $black: #4c4c4c;
 $dark-black: #323232;
 
+ul {
+  margin: 0;
+}
 
 .padding-10 {
   padding: 10px;
@@ -26,6 +29,10 @@ $dark-black: #323232;
   padding: 20px;
 }
 
+.padding-top-5 {
+  padding-top: 5px;
+}
+
 .padding-top-10 {
   padding-top: 10px;
 }
@@ -36,6 +43,10 @@ $dark-black: #323232;
 
 .padding-top-20 {
   padding-top: 10px;
+}
+
+.padding-left-5 {
+  padding-left: 5px;
 }
 
 .padding-left-10 {
@@ -58,18 +69,103 @@ $dark-black: #323232;
   padding-left: 22px;
 }
 
+.padding-bottom-5 {
+  padding-bottom: 5px;
+}
+
+.padding-bottom-10 {
+  padding-bottom: 10px;
+}
+
+.padding-bottom-12 {
+  padding-bottom: 12px;
+}
+
+.padding-bottom-15 {
+  padding-bottom: 15px;
+}
+
+.padding-bottom-20 {
+  padding-bottom: 20px;
+}
+
+.padding-bottom-22 {
+  padding-bottom: 22px;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+.margin-15 {
+  margin: 15px;
+}
+
+.margin-20 {
+  margin: 20px;
+}
+
+.margin-top-10 {
+  margin-top: 10px;
+}
+
+.margin-top-15 {
+  margin-top: 10px;
+}
+
+.margin-top-20 {
+  margin-top: 10px;
+}
+
+.margin-left-10 {
+  margin-left: 10px;
+}
+
+.margin-left-12 {
+  margin-left: 12px;
+}
+
+.margin-left-15 {
+  margin-left: 15px;
+}
+
+.margin-left-20 {
+  margin-left: 20px;
+}
+
+.margin-left-22 {
+  margin-left: 22px;
+}
+
+.flex {
+  display: flex;
+}
+
+.block {
+  display: block;
+}
+
 .grow {
   flex-grow: 1;
 }
 
-
-// flex
-.row-padding-4 {
+.frow {
   display: flex;
   flex-direction: row;
-  padding-left: 4px;
 }
 
+.fcolumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.float-right {
+  justify-content: flex-end;
+}
+
+.border-bottom {
+  border-bottom: 1px solid $gray;
+}
 
 @mixin for-size($size) {
   @if $size == phone-only {

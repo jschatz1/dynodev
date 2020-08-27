@@ -90,7 +90,6 @@ module.exports.destroy = async function destroy(req, res, next) {
 
 module.exports.index = async function index(req, res, next) {
   const {username, project, model} = req.params;
-
   let selectables = false;
 
   let associations = false;
@@ -110,15 +109,13 @@ module.exports.index = async function index(req, res, next) {
   if(scope.length && scope[0].scope === 'user') {
     hasUserScope = true;
   }
-
   if(hasUserScope && !req.user) {
     return response.unauthorized(res);
   }
 
-
   try {
     associations = await models.sequelize
-      .query(`SELECT * FROM ${getAssociationsTable(req.params)} WHERE "related" = '${model}' LIMIT 1`,
+      .query(`SELECT * FROM ${getAssociationsTable({username, project })} WHERE "related" = '${model}' LIMIT 1`,
         {
           type: QueryTypes.SELECT
         });
@@ -129,7 +126,6 @@ module.exports.index = async function index(req, res, next) {
   } catch(e) {
     console.log("error associations", e)
   }
-
   // choose what should be selected
   try {
     selectables_model = await models.sequelize
@@ -147,7 +143,6 @@ module.exports.index = async function index(req, res, next) {
   } catch(e) {
     console.log("error selectables", e);
   }
-
   selectables_model = JSON.parse(selectables_model);
   selectables_association = JSON.parse(selectables_association);
   if(!Array.isArray(selectables_model)) {
