@@ -15,7 +15,7 @@
             <router-link :to="{name: 'project', params: {project_id: project.uuid}}">{{project.name}}</router-link>
           </td>
           <td>{{project.description}}</td>
-          <td>{{project.uuid}}</td>
+          <td><code>{{project.uuid}}</code></td>
         </tr>
       </table>
     </div>

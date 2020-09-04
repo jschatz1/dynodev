@@ -2,7 +2,7 @@
   <div class="padding-10">
     <div class="fcolumn">
       <div class="notification" @click="hideNotification" v-if="hasNotification" :class="notificationType">
-        {{notificationText}}
+        <pre>{{notificationText}}</pre>
       </div>
 
       <div class="frow title">
@@ -265,7 +265,11 @@ export default {
         this.hasNotification = true;
         this.notificationType["is-danger"] = true;
         this.notificationType["is-info"] = false;
-        this.notificationText = "Unable to create your project at this time!"
+        if(e.response.status === 422) {
+          this.notificationText = JSON.stringify(e.response.data, null, 2);
+        } else {
+          this.notificationText = "Unable to create your project at this time!"
+        }
         this.creating = false;
         return;
       }

@@ -25,6 +25,8 @@ html, body, button, input, select, textarea {
   &.is-primary {
     background: $green;
     color: $white;
+    font-size: 1rem;
+    border-radius: 4px;
   }
 }
 
@@ -78,10 +80,6 @@ html, body, button, input, select, textarea {
 .navbar-item, .navbar-item .button {
   font-weight: bold;
   color: $white;
-
-  &:hover {
-    background: $blue;
-  }
 }
 
 .navbar-item .button.is-text:hover {

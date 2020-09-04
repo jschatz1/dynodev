@@ -30,7 +30,7 @@ async function push(options) {
   let doesSchemaExistsResult = null;
   try {
     const createdSchema = await createSchema(jsonFileContents.project, {
-      contents: JSON.stringify(jsonFileContents),
+      contents: JSON.stringify(jsonFileContents, null, 2),
     });
     console.log(chalk.green("Almond remote is up to date"));
     console.log(
