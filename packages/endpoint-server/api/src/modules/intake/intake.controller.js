@@ -73,18 +73,23 @@ module.exports.update = async function update(req, res, next) {
 
 module.exports.destroy = async function destroy(req, res, next) {
   const id = req.params.id;
+  const model = req.params.model;
   try {
-    let intake = await models.Car.findOne({
-      where: {
-        id,
-      },
-    });
-    if (!intake) {
-      return res.status(404).json({ msg: "not found" });
+    const found = await models.sequelize.query(
+      `DELETE FROM ${getTable(req.params)} WHERE "id" = :id RETURNING *;`, 
+      {
+        replacements: {
+          id,
+        },
+        type: QueryTypes.DELETE
+      });
+    if(!found.length) {
+      return res.status(404).json({msg: `unable to find ${model}`})
     }
-    await intake.destroy();
+    return res.json(found[0]);
   } catch (error) {
-    return res.status(404).json({ msg: "cannot delete intake" });
+    console.trace(error);
+    return res.status(422).json({ msg: `unable to find ${model}`, error });
   }
 };
 

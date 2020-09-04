@@ -37,10 +37,19 @@
         </div>
       </template>
       <template v-else-if="isActiveTab('examples')">
+        <div class="frow">
+          <div class="grow">
+            <p>Install the CLI to update your schema</p>
+            <pre>npm install -g dyno</pre>
+          </div>
+        </div>
         <p class="padding-top-10">
           <strong>curl examples (run from your command line)</strong>
         </p>
-        <div class="frow">
+        <div class="frow" v-if="!project.curlExamples">
+          <p class="flex grow">You don't have any models yet.</p>
+        </div>
+        <div class="frow" v-else>
           <pre class="flex grow">{{project.curlExamples}}</pre>
         </div>
       </template>
