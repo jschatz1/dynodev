@@ -54,11 +54,13 @@ private
   def authorize_cli
     begin
       user_id = current_user_cli[:user_id]
-      puts "authorize_cli"
       @current_user ||= User.find(user_id)
     rescue
       begin
         @current_user ||= User.find(session[:user_id]) if session[:user_id]
+        if @current_user.nil?
+          raise 'User nil'
+        end
       rescue
         @current_user = nil
         raise ApplicationController::Unauthenticated.new("Unable to authenticate user")
