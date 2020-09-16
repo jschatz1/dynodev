@@ -12,6 +12,8 @@ Rails.application.routes.draw do
       get 'cli/:project_id/auth_initialized', action: :cli_auth_initialized, controller: 'cli'
       get 'cli/:project_id/routes', action: :get_routes, controller: 'cli'
       get 'users/user', action: :show, controller: 'users'
+      get 'users/user/invites', action: :invites, controller: 'users'
+      post 'invites/check', action: :check, controller: 'invites'
     end
   end
   get '/projects', action: :index, controller: 'projects'

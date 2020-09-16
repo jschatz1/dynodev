@@ -58,7 +58,7 @@ class Api::V1::ProjectsController < ApplicationController
   end
 
   def create_project_schema
-    sql = "CREATE SCHEMA IF NOT EXISTS \"#{@current_user.name}_#{@project.name}\";"
+    sql = "CREATE SCHEMA IF NOT EXISTS \"#{@current_user.name.downcase}_#{@project.name}\";"
     execution = ActiveRecord::Base.connection.execute(sql);
   end
 

@@ -3,7 +3,9 @@ require 'jwt'
 
 class SessionsController < ApplicationController
   def create
+    # find or create the user
     @user = User.find_or_create_from_auth_hash(auth_hash)
+
     auth_has_state = params_hash.has_key?('state')
     if auth_has_state
       token = request.env['omniauth.params']['state']

@@ -1,16 +1,30 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { getProjects } from "../services/user-service";
-import { getProject, getProjectSchema, getProjectRoutes } from "../services/project-service";
+import {
+          getUser,
+          getProjects,
+          getInvites,
+          checkInvite,
+        } from "../services/user-service";
+import {
+          getProject,
+          getProjectSchema,
+          getProjectRoutes,
+        } from "../services/project-service";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     project: {name: "", description: ""},
-    projects: []
+    projects: [],
+    invites: [],
+    user: null,
   },
   getters: {
+    hasAcceptedUser(state) {
+      return state.user && state.user.accepted;
+    },
     hasProjects(state) {
       return state.projects.length;
     },
@@ -19,11 +33,17 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    setUser (state, user) {
+      state.user = user;
+    },
     setProjects (state, projects) {
       state.projects = projects;
     },
     setProject (state, project) {
       state.project = project;
+    },
+    setInvites (state, invites) {
+      state.invites = invites;
     },
     setProjectSchema(state, schema) {
       state.project.schema = schema.original;
@@ -36,6 +56,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async getUser({ commit }) {
+      const user = await getUser();
+      commit('setUser', user.data);
+    },
     async getProjects({ commit }) {
       const projects = await getProjects();
       commit('setProjects', projects.data);
@@ -49,6 +73,15 @@ export default new Vuex.Store({
       commit('setProjectRoutes', routes.data);
       dispatch('createExamples', routes.data);
       return project;
+    },
+    async getInvites({ commit }) {
+      const invites = await getInvites();
+      commit('setInvites', invites.data);
+    },
+
+    async checkInvite({ commit }, inviteCode) {
+      const inviteStatus = await checkInvite({code: inviteCode});
+      return inviteStatus.data;
     },
 
     createExamples({ commit }, routes) {
