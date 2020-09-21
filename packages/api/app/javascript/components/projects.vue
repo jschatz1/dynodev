@@ -7,9 +7,9 @@
             <img src="../images/invite.svg">
             <p class="title padding-15 grow">You've got {{invites.length}} {{invitePlural}} left!</p>
           </div>
-          <p>Use them wisely</p>
+          <p>Share these codes with your friends and they can sign use Dyno too!</p>
           <ul class="padding-15">
-            <li v-for="invite in invites" :key="invite.id" class="frow fcenter">
+            <li v-for="invite in invites" :key="invite.id" class="frow fcenter margin-top-10">
               <code>{{invite.code}}</code>
               <a class="button is-small is-secondary margin-left-20" @click="copyCode(invite.code)">copy</a>
             </li>
