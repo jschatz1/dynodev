@@ -29,5 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
     router,
   }).$mount()
   document.getElementById("projects-app").appendChild(app.$el);
+
+  // burger clicking menu
+  const $burger = document.querySelector(".navbar-burger");
+  $burger.addEventListener("click", function(e) {
+    const target = $burger.dataset.target;
+    const $target = document.getElementById(target);
+
+    $burger.classList.toggle('is-active');
+    $target.classList.toggle('is-active');
+  });
 })
 

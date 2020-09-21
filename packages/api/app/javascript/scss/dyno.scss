@@ -12,6 +12,14 @@ html > body.projects {
   background-color: $blue-300;
 }
 
-body {
+html, body {
   height: 100%;
+}
+
+.navbar-burger {
+  color: $white;
+
+  &:hover {
+    color: $white;
+  }
 }
