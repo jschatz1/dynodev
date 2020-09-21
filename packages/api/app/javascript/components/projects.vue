@@ -9,7 +9,10 @@
           </div>
           <p>Use them wisely</p>
           <ul class="padding-15">
-            <li v-for="invite in invites" :key="invite.id">{{invite.code}}</li>
+            <li v-for="invite in invites" :key="invite.id" class="frow fcenter">
+              <code>{{invite.code}}</code>
+              <a class="button is-small is-secondary margin-left-20" @click="copyCode(invite.code)">copy</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -61,6 +64,7 @@
 </template>
 <script>
 import { mapState, mapGetters } from "vuex";
+import { copyToClipboard } from "../utils/clipboard";
 export default {
   mounted() {
     this.$store.dispatch('getUser');
@@ -88,6 +92,9 @@ export default {
     }
   },
   methods: {
+    copyCode(code) {
+      copyToClipboard(code);
+    },
     checkInvite() {
       this.$store.dispatch('checkInvite', this.inviteCode)
         .then((status) => {

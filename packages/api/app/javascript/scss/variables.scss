@@ -9,6 +9,7 @@ $light-blue: #79A7EC;
 $green: #7AED7B;
 $orange: #EBC06E;
 $gray: #F2F2F2;
+$light-gray: lighten($gray, 20%);
 $white: #FFF;
 $black: #4c4c4c;
 $dark-black: #323232;
@@ -159,12 +160,21 @@ ul {
   flex-direction: column;
 }
 
+.fcenter {
+  display: flex;
+  align-items: center;
+}
+
 .float-right {
   justify-content: flex-end;
 }
 
 .border-bottom {
   border-bottom: 1px solid $gray;
+}
+
+code {
+  color: $black;
 }
 
 @mixin for-size($size) {
