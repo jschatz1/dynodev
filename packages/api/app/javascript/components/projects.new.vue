@@ -138,7 +138,7 @@
   </div>
 </template>
 <script>
-import { createProject, createSchema } from "../services/project-service";
+import { createOAuthClient, createProject, createSchema } from "../services/project-service";
 import { lowerCaseNoSpecialChars, camelToSnakeCase } from "../utils/regexes.js";
 export default {
   data() {
@@ -239,8 +239,15 @@ export default {
     async createProject() {
       let project;
       let schema;
+      let oauth;
       this.creating = true;
       try{
+
+        oauth = await createOAuthClient(projectUUID, {
+          client_id: clientId,
+          client_secret: clientSecret,
+        });
+
         project = await createProject({
           name: this.projectNameFiltered,
           description: this.projectDescription,
@@ -266,6 +273,7 @@ export default {
         this.hasNotification = true;
         this.notificationType["is-danger"] = true;
         this.notificationType["is-info"] = false;
+        console.log(e)
         if(e.response.status === 422) {
           this.notificationText = JSON.stringify(e.response.data, null, 2);
         } else {
