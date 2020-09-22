@@ -26,7 +26,6 @@ function checkNodeVersion(wanted, id) {
 }
 
 checkNodeVersion(requiredVersion, "almond-cli");
-
 program
   .version(`almond ${require("../package").version}`)
   .usage("<command> [options]");

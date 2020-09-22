@@ -46,7 +46,7 @@ class Api::V1::SchemasController < ApplicationController
       schemaFileService.validateProject
       attributes[:contents] = schemaFileService.addNameHelpers
       attributes[:original] = contents
-      schemaFileService.migrate(schema_name)
+      schemaFileService.migrate("#{@current_user.name.downcase}_#{@project.name}")
       @schema = Schema.new(attributes)
       @schema.project_id = @project.id
     rescue Exception => e
