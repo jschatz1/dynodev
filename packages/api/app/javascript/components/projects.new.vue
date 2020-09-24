@@ -138,7 +138,7 @@
   </div>
 </template>
 <script>
-import { createOAuthClient, createProject, createSchema } from "../services/project-service";
+import { createOauth2Client, createProject, createSchema } from "../services/project-service";
 import { lowerCaseNoSpecialChars, camelToSnakeCase } from "../utils/regexes.js";
 export default {
   data() {
@@ -243,11 +243,6 @@ export default {
       this.creating = true;
       try{
 
-        oauth = await createOAuthClient(projectUUID, {
-          client_id: clientId,
-          client_secret: clientSecret,
-        });
-
         project = await createProject({
           name: this.projectNameFiltered,
           description: this.projectDescription,
@@ -259,6 +254,11 @@ export default {
           schema: {
             contents: this.formatted
           }
+        });
+
+        oauth = await createOauth2Client(this.projectUUID, {
+          client_id: this.clientId,
+          client_secret: this.clientSecret,
         });
 
         this.hasNotification = true;

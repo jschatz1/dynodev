@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="3072px" height="678px" viewBox="0 0 3072 678" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Artboard</title>
+    <defs>
+        <linearGradient x1="50%" y1="100%" x2="50%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#45007F" offset="0%"></stop>
+            <stop stop-color="#230040" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#230040" offset="0%"></stop>
+            <stop stop-color="#7D00E5" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="36.6788474%" x2="50%" y2="94.2141297%" id="linearGradient-3">
+            <stop stop-color="#230040" offset="0%"></stop>
+            <stop stop-color="#8B00FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-17.0881636%" x2="50%" y2="32.7353015%" id="linearGradient-4">
+            <stop stop-color="#230040" offset="0%"></stop>
+            <stop stop-color="#6800BF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-1)" x="-61.5" y="-59.5" width="2959" height="652"></rect>
+        <path d="M13.953786,191.431525 C309.076464,37.5503876 569.298098,-25.1162791 794.618688,3.43152455 C1019.93928,31.9793282 1180.1941,167.21447 1275.38316,409.136951 C1333.94511,618.108527 1499.72335,618.108527 1772.71787,409.136951 C2045.71238,200.165375 2420.18229,50.4530577 2896.12759,-40 L2927,661.354005 L-62,688 L-62,233.839793 L13.953786,191.431525 Z" id="Path" fill-opacity="0.85" fill="url(#linearGradient-2)"></path>
+        <path d="M-160.946007,306.5 C813.008497,-18.1551905 1263.65731,497.161016 1876.67706,401.328382 C2285.3569,337.43996 2686.46454,126.663833 3080,-231 L3080,740.076939 L583.109146,844 L-188.84751,614.376299 C-819.54951,625.562227 -810.249009,522.936794 -160.946007,306.5 Z" id="Path-2" fill="url(#linearGradient-3)"></path>
+        <path d="M2926,658.773887 C2467.42314,455.521529 1947.64473,391.977417 1366.66479,468.141552 C495.194866,582.387754 416.439422,917.360193 -77.8399082,869.374756 C-407.359461,837.384465 -522.660443,901.741315 -423.742852,1062.44531 L2099.71707,1095 L2892.63479,962.422029 L2926,658.773887 Z" id="Path-3" fill="url(#linearGradient-4)"></path>
+    </g>
+</svg>

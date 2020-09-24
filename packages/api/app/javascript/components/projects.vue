@@ -23,7 +23,8 @@
           </div>
           <div class="frow">
             <img src="../images/star.svg">
-            <p class="title padding-15 grow">Hello! Let’s get started with a few easy steps</p>
+            <p v-if="!hasProjects" class="title padding-15 grow">Hello! Let’s get started! Create a new project!</p>
+            <p v-else class="title padding-15 grow">Projects</p>
           </div>
           <div class="fcolumn padding-top-10 padding-bottom-10">
             <p class="padding-15" v-if="!hasProjects">No projects yet</p>
