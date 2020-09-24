@@ -23,7 +23,7 @@ html, body, button, input, select, textarea {
 
 
   &.is-primary {
-    background: $green;
+    background: $red;
     color: $white;
     font-size: 1rem;
     border-radius: 4px;
@@ -44,8 +44,47 @@ html, body, button, input, select, textarea {
   right: 0;
 }
 
+.hero {
+  .title, .subtitle {
+    margin-bottom: 3rem;
+  }
+
+  .title, .subtitle {
+    color: white;
+  }
+}
+
+.hero.is-swishy {
+  background: #000;
+  background: url("../images/swishy.svg") no-repeat top left;
+  background-size: cover;
+  margin-top: -100px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero.is-rainbows {
+  background: #000;
+  background: url("../images/rainbows.svg") no-repeat 0 -1px;
+  background-size: cover;
+  margin-top: -100px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero .arrow {
+  background: url("../images/arrow.svg") no-repeat bottom center;
+  display: block;
+  width: 100%;
+  height: 100px;
+  position: relative;
+  z-index: 200;
+
+}
+
 .hero.is-butter {
-  background: url("../images/header.svg") no-repeat top left;
+  background: #000;
+  background: url("../images/header.svg") no-repeat -1px 1px;
   background-size: cover;
 
   .hero-body {
@@ -57,10 +96,23 @@ html, body, button, input, select, textarea {
       padding-top: 3rem;
     }
   }
+}
+.terminal {
+  width: 100%;
+  height: 206px;
+  margin-top: -106px;
+  z-index: 2;
+  position: relative;
+  &.terminal-init {
+    background: url("../images/terminal1.svg") no-repeat top center;
+    background-size: contain;
+    background-color: transparent;
+  }
 
-  .title, .subtitle {
-    color: white;
-    margin-bottom: 3rem;
+  &.terminal-push {
+    background: url("../images/terminal2.svg") no-repeat top center;
+    background-size: contain;
+    background-color: transparent;
   }
 }
 
@@ -83,5 +135,5 @@ html, body, button, input, select, textarea {
 }
 
 .navbar-item .button.is-text:hover {
-  background: rgba($white, 0.2);
+  background: $white;
 }

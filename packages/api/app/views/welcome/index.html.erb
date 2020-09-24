@@ -3,7 +3,6 @@
     <%= render "nav" %>
   </div>
   <div class="hero-body columns">
-    <span class="tablet"></span>
     <div class="column is-5 is-offset-1 has-text-left">
       <p class="title">
         This stack does dynamic
@@ -15,7 +14,43 @@
       </p>
       <div class="call-to-action buttons">
         <!-- <a class="button action is-primary">Request Invite</a> -->
-        <%= link_to "Sign up (Invite only)", "/auth/github", class: "button action is-default" %>
+        <%= link_to "Sign up (Invite only)", "/auth/github", class: "button action is-primary" %>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="terminal terminal-init"></section>
+<section class="hero is-swishy">
+  <div class="hero-body">
+    <div class="columns">
+      <div class="column is-4 is-offset-1 has-text-left">
+        <p class="title">
+          Built in tools
+        </p>
+        <p class="subtitle">
+          Write Vue, and automatically get a perfectly matched, secure, well tested backend to your frontend.
+        </p>
+      </div>
+      <div class="column is-4 is-offset-3">
+        <%= image_pack_tag 'magic.svg' %>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="terminal terminal-push"></section>
+<section class="hero is-rainbows">
+  <div class="hero-body">
+    <div class="columns">
+      <div class="column is-4 is-offset-1 has-text-left">
+        <p class="title">
+          Batteries included
+        </p>
+        <p class="subtitle">
+          Includes authentication, authorization, role based access control and more.
+        </p>
+      </div>
+      <div class="column is-4 is-offset-3">
+        <%= image_pack_tag 'battery.svg' %>
       </div>
     </div>
   </div>

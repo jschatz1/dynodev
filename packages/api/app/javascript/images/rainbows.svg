@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="3072px" height="678px" viewBox="0 0 3072 678" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Artboard</title>
+    <defs>
+        <linearGradient x1="50%" y1="100%" x2="50%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#3B6FD9" offset="0%"></stop>
+            <stop stop-color="#305AD9" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="74.7724496%" y1="71.0450446%" x2="-36.6762433%" y2="71.0450446%" id="linearGradient-2">
+            <stop stop-color="#03A62C" offset="0.00546328671%"></stop>
+            <stop stop-color="#04FA42" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="74.7724496%" y1="71.0450446%" x2="-36.6762433%" y2="71.0450446%" id="linearGradient-3">
+            <stop stop-color="#ABD904" offset="0.00546328671%"></stop>
+            <stop stop-color="#CCFF13" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="74.7724496%" y1="71.0450446%" x2="-36.6762433%" y2="71.0450446%" id="linearGradient-4">
+            <stop stop-color="#F2CB05" offset="0.00546328671%"></stop>
+            <stop stop-color="#FFEF9C" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="74.7724496%" y1="71.0450446%" x2="-36.6762433%" y2="71.0450446%" id="linearGradient-5">
+            <stop stop-color="#F2911B" offset="0.00546328671%"></stop>
+            <stop stop-color="#F2E0CB" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="74.7724496%" y1="71.0450446%" x2="-36.6762433%" y2="71.0450446%" id="linearGradient-6">
+            <stop stop-color="#F26B1D" offset="0.00546328671%"></stop>
+            <stop stop-color="#F0C1A6" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-1)" x="0.5" y="1.5" width="3071" height="677"></rect>
+        <polygon id="Triangle" fill="url(#linearGradient-2)" transform="translate(1772.500000, 338.500000) rotate(-270.000000) translate(-1772.500000, -338.500000) " points="1772.5 -15 2437 692 1108 692"></polygon>
+        <polygon id="Triangle" fill-opacity="0.85" fill="url(#linearGradient-3)" transform="translate(2009.500000, 338.500000) rotate(-270.000000) translate(-2009.500000, -338.500000) " points="2009.5 -15 2674 692 1345 692"></polygon>
+        <polygon id="Triangle" fill-opacity="0.85" fill="url(#linearGradient-4)" transform="translate(2246.500000, 338.500000) rotate(-270.000000) translate(-2246.500000, -338.500000) " points="2246.5 -15 2911 692 1582 692"></polygon>
+        <polygon id="Triangle" fill-opacity="0.85" fill="url(#linearGradient-5)" transform="translate(2480.500000, 338.500000) rotate(-270.000000) translate(-2480.500000, -338.500000) " points="2480.5 -15 3145 692 1816 692"></polygon>
+        <polygon id="Triangle" fill-opacity="0.85" fill="url(#linearGradient-6)" transform="translate(2717.500000, 338.500000) rotate(-270.000000) translate(-2717.500000, -338.500000) " points="2717.5 -15 3382 692 2053 692"></polygon>
+    </g>
+</svg>
