@@ -8,6 +8,9 @@ class Api::V1::SchemasController < ApplicationController
   # GET /schemas.json
   def index
     @project = Project.find_by(uuid: params[:project_id])
+    if @project.nil?
+      not_found
+    end
     @schema = Schema.order(created_at: :desc).find_by(project_id: @project.id)
     pp @schema
     render json: @schema
@@ -35,10 +38,10 @@ class Api::V1::SchemasController < ApplicationController
   # POST /schemas.json
   def create
     @project = Project.find_by(uuid: params[:project_id], user_id: @current_user.id)
-    schema_name = "#{@current_user.name.downcase}_#{@project.name}"
     if @project.nil?
       not_found
     end
+    schema_name = "#{@current_user.name.downcase}_#{@project.name}"
     attributes = schema_params.clone
     contents = attributes[:contents]
     schemaFileService = SchemaFileService.new(contents)

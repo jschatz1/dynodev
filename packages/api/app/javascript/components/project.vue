@@ -5,6 +5,9 @@
         <div class="fcolumn" v-if="loading">
           One sec
         </div>
+        <div class="fcolumn" v-else-if="error">
+          Error loading project
+        </div>
         <div class="fcolumn" v-else>
           <div class="frow">
             <img src="../images/api.svg">
@@ -76,12 +79,17 @@ export default {
     return {
       loading: false,
       currentTab: "schema",
+      error: false
     }
   },
   mounted() {
     this.loading = true;
     this.$store.dispatch('getProject', this.$route.params.project_id)
-    .then(() => this.loading = false);
+    .then(() => this.loading = false)
+    .catch((e) => {
+      this.loading = false;
+      this.error = true;
+    });
   },
   methods: {
     setActive(tab) {
