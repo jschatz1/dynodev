@@ -2,10 +2,7 @@ const common = require("./common");
 const axios = require("axios");
 
 let config = {};
-axios.defaults.baseURL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
-    : "https://dyno.dev";
+axios.defaults.baseURL = "http://localhost:3000";
 
 common.addAuthHeader();
 

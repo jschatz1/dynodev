@@ -8,9 +8,9 @@ A Dyno project automatically deploys your database and provides APIs and basic A
 
 ## Getting Started
 
-1. `npm install -g dyno-cli`
-1. `dyno-cli login` (authenticate using the web browser)
-1. `dyno-cli init`
+1. `npm install -g dynodev`
+1. `dynodev login` (authenticate using the web browser)
+1. `dynodev init`
 
 ## Commands
 
