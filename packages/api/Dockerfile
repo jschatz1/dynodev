@@ -13,6 +13,7 @@ WORKDIR $RAILS_ROOT
 RUN gem install bundler:2.1.2
 COPY Gemfile* $RAILS_ROOT
 RUN bundle install
+RUN rake assets:precompile
 
 COPY . $RAILS_ROOT
 RUN yarn install --check-files

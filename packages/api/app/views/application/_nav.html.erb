@@ -22,7 +22,7 @@
          <div class="navbar-end">
             <div class="navbar-item">
                <div class="buttons">
-                  <% unless current_user.nil? %>
+                  <% if not current_user.nil? %>
                     <%= link_to current_user.name, home_path, class: "button is-text" %>
                     <%= link_to "Projects", '/projects', class: "button is-text" %>
                     <%= link_to 'Sign out', signout_path, class: "button is-text" %>
