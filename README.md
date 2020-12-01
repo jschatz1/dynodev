@@ -1,3 +1,5 @@
+<img src="/packages/design/dino_blue.png" height="100px" />
+
 # Dyno Dev
 
 **WIP:ALPHA**
