@@ -1,5 +1,7 @@
 # Dyno Dev
 
+**WIP:ALPHA**
+
 ## Who 
 
 If you are a frontend dev who doesn't have time or doesn't know how to write backend code, dyno creates a backend for you frontend from a simple JSON config file. Config files can be generated through the web GUI or via the CLI.
