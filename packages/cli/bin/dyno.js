@@ -2,7 +2,7 @@
 
 const { chalk, semver } = require("@vue/cli-shared-utils");
 const commander = require("commander");
-const { almondFile, companyName } = require("../lib/config");
+const { dynodevFile, companyName } = require("../lib/config");
 const package = require("../package.json");
 const requiredVersion = package.engines.node;
 const currentVersion = package.version;
@@ -25,14 +25,14 @@ function checkNodeVersion(wanted, id) {
   }
 }
 
-checkNodeVersion(requiredVersion, "almond-cli");
+checkNodeVersion(requiredVersion, "dynodev");
 program
-  .version(`almond ${require("../package").version}`)
+  .version(`dynodev ${require("../package").version}`)
   .usage("<command> [options]");
 
 program
   .command("init")
-  .description("Initialize an almond file. The best place to get started.")
+  .description("Initialize an dynodev file. The best place to get started.")
   .action((cmd) => {
     const options = cleanArgs(cmd);
     require("../lib/init")(options);
@@ -64,7 +64,7 @@ program
 
 program
   .command("link")
-  .description(`Link an existing project to your current ${almondFile} file.`)
+  .description(`Link an existing project to your current ${dynodevFile} file.`)
   .action((cmd) => {
     const options = cleanArgs(cmd);
     require("../lib/link")(options);
@@ -85,7 +85,7 @@ program.on("--help", () => {
   console.log();
   console.log(
     `  Run ${chalk.cyan(
-      `almond <command> --help`
+      `dynodev <command> --help`
     )} for detailed usage of given command.`
   );
   console.log();
@@ -93,7 +93,7 @@ program.on("--help", () => {
 
 program
   .command("push")
-  .description(`Push your ${almondFile} up and build your backend.`)
+  .description(`Push your ${dynodevFile} up and build your backend.`)
   .action((cmd) => {
     const options = cleanArgs(cmd);
 
@@ -102,7 +102,7 @@ program
 
 program
   .command("pull")
-  .description(`Pull down your latest ${almondFile}, replacing your existing file.`)
+  .description(`Pull down your latest ${dynodevFile}, replacing your existing file.`)
   .action((cmd) => {
     const options = cleanArgs(cmd);
 
@@ -114,20 +114,20 @@ function makeAddCommand() {
   add.description("add a model or add a property to a model");
   add
     .command("model")
-    .description("add a model to the almond.json")
+    .description("add a model to the dynodev.json")
     .action(() => {
       console.log("add model");
     });
   add
     .command("property")
-    .description("add a property to a model in the almond.json")
+    .description("add a property to a model in the dynodev.json")
     .action(() => {
       console.log("add property");
     });
   add
     .command("properties")
     .description(
-      "add multiple properties at once to a model in the almond.json"
+      "add multiple properties at once to a model in the dynodev.json"
     )
     .action(() => {
       console.log("add properties");

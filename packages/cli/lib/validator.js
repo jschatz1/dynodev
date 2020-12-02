@@ -1,13 +1,13 @@
-const { almondFile } = require("./config");
+const { dynodevFile } = require("./config");
 const fs = require("fs");
 const { chalk } = require("@vue/cli-shared-utils");
 
 module.exports.validateFile = async function validateFile() {
-  if (!fs.existsSync(almondFile)) {
-    return { result: false, reason: `Missing ${almondFile}`, reasonCode: 404 };
+  if (!fs.existsSync(dynodevFile)) {
+    return { result: false, reason: `Missing ${dynodevFile}`, reasonCode: 404 };
   }
 
-  const file = fs.readFileSync(almondFile, "utf8");
+  const file = fs.readFileSync(dynodevFile, "utf8");
   let projectJSON = null;
   try {
     projectJSON = JSON.parse(file);

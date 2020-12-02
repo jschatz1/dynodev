@@ -6,33 +6,33 @@ const {
 } = require("@vue/cli-shared-utils");
 const fs = require("fs");
 const inquirer = require("inquirer");
-const { almondFile } = require("./config");
+const { dynodevFile } = require("./config");
 const { validateFile } = require("./validator");
 const { createSchema, doesSchemaExist, createOauth2Client } = require("../services/projects");
 const _ = require("lodash");
 
 async function push(options) {
-  console.log(chalk.cyan(`Checking your ${almondFile}`));
+  console.log(chalk.cyan(`Checking your ${dynodevFile}`));
   const validationResult = await validateFile();
   const projectUUID = validationResult.project.project;
   if (validationResult.result) {
-    console.log(chalk.green(`Your ${almondFile} looks good to go!`));
+    console.log(chalk.green(`Your ${dynodevFile} looks good to go!`));
   } else {
     console.log(`${chalk.red(
-      `There was a problem with validating your ${almondFile}:\n${validationResult.reason}`
+      `There was a problem with validating your ${dynodevFile}:\n${validationResult.reason}`
     )}\n${validationResult.solution || ""}
     `);
     console.log(chalk.red("Cancelled push"));
     return;
   }
-  const file = fs.readFileSync(almondFile, "utf8");
+  const file = fs.readFileSync(dynodevFile, "utf8");
   const jsonFileContents = JSON.parse(file);
   let doesSchemaExistsResult = null;
   try {
     const createdSchema = await createSchema(jsonFileContents.project, {
       contents: JSON.stringify(jsonFileContents, null, 2),
     });
-    console.log(chalk.green("Almond remote is up to date"));
+    console.log(chalk.green("Dynodev remote is up to date"));
     console.log(
       `${chalk.gray("Schema updated at")}: ${chalk.magenta(
         new Date(createdSchema.data.updated_at)
@@ -112,7 +112,7 @@ module.exports = (...args) => {
   return push(...args).catch((err) => {
     stopSpinner(false); // do not persist
     error(err);
-    if (!process.env.ALMOND_CLI_TEST) {
+    if (!process.env.DYNODEV_CLI_TEST) {
       process.exit(1);
     }
   });

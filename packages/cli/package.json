@@ -1,9 +1,8 @@
 {
   "name": "dynodev",
-  "version": "0.0.23",
-  "description": "dyno is to backend as kubernetes is to infra",
+  "version": "0.0.24",
+  "description": "DynoDev is to backend as kubernetes is to infra",
   "author": "Jacob Schatz",
-  "license": "MIT",
   "private": false,
   "scripts": {
     "link": "node link",
@@ -20,7 +19,7 @@
     "minimist": "^1.2.5"
   },
   "bin": {
-    "dynodev": "bin/almond.js"
+    "dynodev": "bin/dyno.js"
   },
   "engines": {
     "node": ">=8.9"

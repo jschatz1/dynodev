@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const _ = require("lodash");
 const { clearConsole, chalk } = require("@vue/cli-shared-utils");
 const { createOauth2Client } = require("../services/projects");
-const { almondFile, crud } = require("./config");
+const { dynodevFile, crud } = require("./config");
 
 async function createProperty(model) {
   let propertyObj = {};
@@ -206,7 +206,7 @@ module.exports.createAssociationsForModels = async function createAssociationsFo
     console.log(
       `You have ${numModels} ${
         numModels === 1 ? "model" : "models"
-      } in your ${almondFile}.`
+      } in your ${dynodevFile}.`
     );
     console.log(
       "You can associate your models with other models once you have at least 2 models."

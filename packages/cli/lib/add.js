@@ -2,7 +2,7 @@ const inquirer = require("inquirer");
 const minimist = require("minimist");
 const path = require("path");
 const fs = require("fs");
-const { almondFile, docsSite } = require("./config");
+const { dynodevFile, docsSite } = require("./config");
 const {
   chalk,
   stopSpinner,
@@ -19,7 +19,7 @@ module.exports = (...args) => {
   return init(...args).catch((err) => {
     stopSpinner(false); // do not persist
     error(err);
-    if (!process.env.ALMOND_CLI_TEST) {
+    if (!process.env.DYNODEV_CLI_TEST) {
       process.exit(1);
     }
   });
