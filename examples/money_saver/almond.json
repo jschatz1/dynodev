@@ -1,0 +1,56 @@
+{
+  "project": "282a9b3b-a647-4d3e-9f15-31c526bf94d3",
+  "models": [
+    {
+      "name": "bank",
+      "properties": [
+        {
+          "name": "name",
+          "type": "string",
+          "unique": true,
+          "nullable": false
+        }
+      ],
+      "associations": [
+        {
+          "related": "account",
+          "type": "hasMany"
+        }
+      ],
+      "selectables": [
+        "*"
+      ],
+      "authorize": [],
+      "scope": {
+        "index": "all",
+        "create": "all",
+        "read": "all",
+        "update": "all",
+        "destroy": "all"
+      }
+    },
+    {
+      "name": "account",
+      "properties": [
+        {
+          "name": "name",
+          "type": "string",
+          "unique": true,
+          "nullable": false
+        }
+      ],
+      "associations": [],
+      "selectables": [
+        "*"
+      ],
+      "authorize": [],
+      "scope": {
+        "index": "all",
+        "create": "all",
+        "read": "all",
+        "update": "all",
+        "destroy": "all"
+      }
+    }
+  ]
+}
