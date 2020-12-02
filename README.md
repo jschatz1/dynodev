@@ -34,3 +34,7 @@ Frontend devs want to prototype quickly, and may not want to spend time spinning
 1. `dynodev push`
 1. See available routes with `dynodev routes`
 1. Try http://localhost3001/api/v1/someroute and see some data
+
+## Examples
+
+Run the `money_saver` app in the examples directory. README included.
