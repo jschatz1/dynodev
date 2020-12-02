@@ -3,7 +3,7 @@ const minimist = require("minimist");
 const _ = require("lodash");
 const path = require("path");
 const fs = require("fs");
-const { almondFile, docsSite } = require("./config");
+const { dynodevFile, docsSite } = require("./config");
 const { getProjects } = require("../services/projects");
 const { JSONFileContentsAs, writeToFile }  = require("./fileCreate");
 const { createModel, createAuthModel, createAssociationsForModels } = require("./modelCreate");
@@ -24,15 +24,15 @@ async function init(options) {
   let projectUUID = "";
   let didAddAuth = false;
 
-  if (!fs.existsSync(almondFile)) {
+  if (!fs.existsSync(dynodevFile)) {
     createInitFile = true;
   } else {
-    const { overwriteAlmondfile } = await inquirer.prompt({
+    const { overwriteDynodevFile } = await inquirer.prompt({
       type: "confirm",
-      name: "overwriteAlmondfile",
-      message: `Overwrite existing ${almondFile}?`,
+      name: "overwriteDynodevFile",
+      message: `Overwrite existing ${dynodevFile}?`,
     });
-    createInitFile = overwriteAlmondfile;
+    createInitFile = overwriteDynodevFile;
   }
 
   if (createInitFile) {
@@ -113,9 +113,9 @@ async function init(options) {
 
     writeToFile(toWriteToFile);
 
-    console.log(chalk.green(`🎉  ${almondFile} has been created`));
+    console.log(chalk.green(`🎉  ${dynodevFile} has been created`));
   } else {
-    console.log(chalk.red(`🤷‍♀️ ${almondFile} was not created`));
+    console.log(chalk.red(`🤷‍♀️ ${dynodevFile} was not created`));
   }
 }
 
@@ -123,7 +123,7 @@ module.exports = (...args) => {
   return init(...args).catch((err) => {
     stopSpinner(false); // do not persist
     error(err);
-    if (!process.env.ALMOND_CLI_TEST) {
+    if (!process.env.DYNODEV_CLI_TEST) {
       process.exit(1);
     }
   });

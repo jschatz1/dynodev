@@ -4,11 +4,12 @@ const {
   error,
   clearConsole,
 } = require("@vue/cli-shared-utils");
+const { dynodevFile } = require("./config");
 const { getProjectLatestSchema } = require("../services/projects");
 const { validateFile } = require("./validator");
 
 async function pull(options) {
-  console.log(chalk.cyan(`Checking your ${almondFile}`));
+  console.log(chalk.cyan(`Checking your ${dynodevFile}`));
   const validationResult = await validateFile();
   const projectUUID = validationResult.project.project;
   console.log(chalk.green("Pulling your latest project"));
@@ -24,7 +25,7 @@ module.exports = (...args) => {
   return pull(...args).catch((err) => {
     stopSpinner(false); // do not persist
     error(err);
-    if (!process.env.ALMOND_CLI_TEST) {
+    if (!process.env.DYNODEV_CLI_TEST) {
       process.exit(1);
     }
   });

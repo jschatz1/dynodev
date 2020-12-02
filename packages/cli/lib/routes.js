@@ -21,7 +21,7 @@ module.exports = (...args) => {
   return routes(...args).catch((err) => {
     stopSpinner(false); // do not persist
     error(err);
-    if (!process.env.ALMOND_CLI_TEST) {
+    if (!process.env.DYNODEV_CLI_TEST) {
       process.exit(1);
     }
   });

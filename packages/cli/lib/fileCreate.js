@@ -1,4 +1,4 @@
-const { almondFile } = require("./config");
+const { dynodevFile } = require("./config");
 const fs = require("fs");
 const path = require("path");
 
@@ -26,7 +26,7 @@ module.exports.formatJSONFile = function formatJSONFile(data) {
 }
 
 function getJSONFileContents() {
-  return JSON.parse(fs.readFileSync(path.join(targetDir, almondFile), 'utf8'));
+  return JSON.parse(fs.readFileSync(path.join(targetDir, dynodevFile), 'utf8'));
 }
 
 module.exports.getJSONFileContents = getJSONFileContents;
@@ -36,5 +36,5 @@ module.exports.getCurrentProjectId = function getCurrentProjectId() {
 }
 
 module.exports.writeToFile = function writeToFile(data) {
-  fs.writeFileSync(path.join(targetDir, almondFile), data);
+  fs.writeFileSync(path.join(targetDir, dynodevFile), data);
 }
